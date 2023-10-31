@@ -10,3 +10,7 @@ export const DbConfig = {
   PORT: process.env.DB_PORT ? Number(process.env.DB_PORT) : 3306,
   DATABASE: process.env.DB_DATABASE,
 };
+
+export const ServerConfig = {
+  port: process.env.PORT ?? 3000,
+};
