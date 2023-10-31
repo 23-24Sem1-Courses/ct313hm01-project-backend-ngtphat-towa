@@ -5,7 +5,7 @@ import http from "http";
 import { knexConfig } from "./config/knexfile";
 import { ServerConfig } from "./config/config";
 import Logging from "./common/Logging";
-import CatalogRouter from "../src/routes/catalog.router";
+import Routers from "../src/routes/router";
 
 /* Declare libraries */
 const router = express();
@@ -60,7 +60,7 @@ const StartServer = () => {
     res.json({ message: "Welcome to ecomerce API." });
   });
 
-  router.use("/api/catalog", CatalogRouter);
+  router.use("/api", Routers);
 
   /** Error Handling */
   router.use((req, res, next) => {
