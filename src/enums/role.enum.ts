@@ -1,4 +1,4 @@
-export enum Rele {
+export enum Role {
   user,
   manager,
   admin,
