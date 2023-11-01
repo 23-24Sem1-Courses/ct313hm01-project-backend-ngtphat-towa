@@ -7,6 +7,12 @@ import { ServerConfig } from "./config/config";
 import Logging from "./common/Logging";
 import Routers from "../src/routes/router";
 
+import {
+  handleError,
+  methodNotAllowed,
+  resourceNotFound,
+} from "./controllers/errors.controller";
+
 /* Declare libraries */
 const router = express();
 const db = Knex(knexConfig);
@@ -63,13 +69,14 @@ const StartServer = () => {
   router.use("/api", Routers);
 
   /** Error Handling */
-  router.use((req, res, next) => {
-    const err = new Error("not found");
+  // Apply the "Method Not Allowed" middleware
+  router.use(methodNotAllowed);
 
-    Logging.error(err);
+  // Apply the "Resource Not Found" middleware
+  router.use(resourceNotFound);
 
-    return res.status(404).json({ message: err.message });
-  });
+  // Apply the error handling middleware
+  router.use(handleError);
 
   // Server listenning
   http

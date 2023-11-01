@@ -1,5 +1,5 @@
 export interface ResponseDTO {
-  success: boolean;
+  success: string;
   message: string;
-  timestamp: string;
+  timestamp?: string;
 }
