@@ -4,8 +4,8 @@ const UserRouter = express.Router();
 
 UserRouter.route("/all").get(controller.findAllUser);
 
-UserRouter.route("/signup").post(controller.signUp);
+UserRouter.route("/register").post(controller.signUp);
 
-UserRouter.route("/signin").post(controller.signIn);
+UserRouter.route("/login").post(controller.signIn);
 
 export default UserRouter;

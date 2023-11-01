@@ -5,12 +5,13 @@ import UserRouter from "./user.router";
 import WishlistRouter from "./wishlist.router";
 import OrderRouter from "./order.router";
 import FileUpdloadRouter from "./file.router";
+import CategoryRouter from "./category.router";
 
 const routers = express.Router();
 
 routers.use("/catalog", CatalogRouter);
 
-routers.use("/category", CatalogRouter);
+routers.use("/category", CategoryRouter);
 
 routers.use("/cart", CartRouter);
 

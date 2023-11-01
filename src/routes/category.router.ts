@@ -6,7 +6,7 @@ const CategoryRouter = express.Router();
 CategoryRouter.route("/").get(controller.getCategories);
 
 /** get by id */
-CategoryRouter.route("/:id").put(controller.getCategoryById);
+CategoryRouter.route("/:id").get(controller.getCategoryById);
 
 /** /add */
 CategoryRouter.route("/").post(controller.createCategory);
