@@ -1,6 +1,6 @@
 import express from "express";
 import CartRouter from "./cart.router";
-import CatalogRouter from "./catalog.router";
+import ProductRouter from "./product.router";
 import UserRouter from "./user.router";
 import WishlistRouter from "./wishlist.router";
 import OrderRouter from "./order.router";
@@ -9,7 +9,7 @@ import CategoryRouter from "./category.router";
 
 const routers = express.Router();
 
-routers.use("/catalog", CatalogRouter);
+routers.use("/product", ProductRouter);
 
 routers.use("/category", CategoryRouter);
 

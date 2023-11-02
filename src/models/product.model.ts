@@ -4,9 +4,9 @@ import { WishList } from "./wishlist.model";
 
 export interface Product {
   id?: number;
-  name: string;
-  imageURL?: string;
-  price: number;
+  name?: string;
+  imageUrl?: string;
+  price?: number;
   description?: string;
   category?: Category;
   wishListList?: WishList[];
@@ -18,7 +18,7 @@ function validateProduct(product: Product): void {
     throw new Error("The name property is required.");
   }
 
-  if (!product.imageURL) {
+  if (!product.imageUrl) {
     throw new Error("The imageURL property is required.");
   }
 

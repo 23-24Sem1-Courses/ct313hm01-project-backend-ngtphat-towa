@@ -1,7 +1,7 @@
 export interface InventoryItem {
   id?: string;
   userId: string;
-  catalogItemId: string;
+  productItemId: string;
   quantity: number;
   acquireDate: Date;
 }
