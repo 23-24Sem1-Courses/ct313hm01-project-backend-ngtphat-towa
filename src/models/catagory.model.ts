@@ -3,14 +3,14 @@ import { Product } from "./product.model";
 
 export interface Category {
   id: number;
-  name: string;
+  categoryName: string;
   description: string;
   imageUrl?: string;
   products?: Product[];
 }
 
 export function validateCategory(category: Category): ApiError | null {
-  if (!category.name) {
+  if (!category.categoryName) {
     return new Error("The categoryName property is required.");
   }
 

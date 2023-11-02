@@ -47,9 +47,9 @@ const createCategory = async (
     /// Retrive and validate
     const catagoryDTO = new CategoryDTO(req.body);
     validateCategoryDTO(catagoryDTO);
-    if ((await isCategoryExist(catagoryDTO.name)) === true) {
+    if ((await isCategoryExist(catagoryDTO.categoryName)) === true) {
       const response: ApiResponse = {
-        message: `Category ${catagoryDTO.name} was created`,
+        message: `Category ${catagoryDTO.categoryName} was created`,
         success: true,
       };
 
