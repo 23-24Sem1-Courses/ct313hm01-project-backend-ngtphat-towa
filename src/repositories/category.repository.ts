@@ -40,20 +40,20 @@ export class CategoryRepository {
   }
 
   // Create
-  async create(category: Category): Promise<Category> {
+  async create(model: Category): Promise<Category> {
     const [id] = await this.db<Category>(TableName)
-      .insert(category)
+      .insert(model)
       .returning("id");
-    category.id = Number(id);
-    Logging.info(category);
-    return category;
+    model.id = Number(id);
+    Logging.info(model);
+    return model;
   }
 
   // Update
-  async update(category: Category): Promise<Category> {
+  async update(model: Category): Promise<Category> {
     await this.db<Category>(TableName)
-      .where("id", category.id)
-      .update(category);
-    return category;
+      .where("id", model.id)
+      .update(model);
+    return model;
   }
 }

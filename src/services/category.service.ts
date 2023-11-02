@@ -15,37 +15,34 @@ export class CategoryService {
   }
 
   // Get all categories
-  async getAllCategories(): Promise<Category[]> {
-    const categories = this.categoryRepository.getAll();
-    return categories;
+  async getAll(): Promise<Category[]> {
+    const models = this.categoryRepository.getAll();
+    return models;
   }
 
   // Get a category by name
-  async getCategoryByName(name: string): Promise<Category | null> {
+  async getByName(name: string): Promise<Category | null> {
     return this.categoryRepository.getByName(name);
   }
 
   // Get a category by ID
-  async getCategoryById(id: number): Promise<Category | null> {
-    const category = this.categoryRepository.getById(id);
-    return category;
+  async getById(id: number): Promise<Category | null> {
+    const model = this.categoryRepository.getById(id);
+    return model;
   }
 
   // Create a new category
-  async createCategory(categoryDTO: CategoryDTO): Promise<Category | null> {
-    var category = mapCategoryDTOToModel(categoryDTO);
-    const catagory = await this.categoryRepository.create(category);
+  async create(categoryDTO: CategoryDTO): Promise<Category | null> {
+    var model = mapCategoryDTOToModel(categoryDTO);
+    const catagory = await this.categoryRepository.create(model);
     return catagory;
   }
 
   // Update a category
-  async updateCategory(
-    id: number,
-    categoryDTO: CategoryDTO
-  ): Promise<Category> {
-    var category = mapCategoryDTOToModel(categoryDTO);
-    category = await this.categoryRepository.update(category);
+  async update(id: number, categoryDTO: CategoryDTO): Promise<Category> {
+    var models = mapCategoryDTOToModel(categoryDTO);
+    models = await this.categoryRepository.update(models);
 
-    return category;
+    return models;
   }
 }

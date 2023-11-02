@@ -1,4 +1,4 @@
-import ApiError from "../../common/api.error";
+import { InvalidParameterErrorResponse } from "../../common/api.error";
 import { Category } from "../../models/catagory.model";
 import { ProductDTO } from "../product/product.dto";
 
@@ -20,7 +20,10 @@ export class CategoryDTO {
 
 export function validateCategoryDTO(categoryDto: CategoryDTO): void {
   if (!categoryDto.categoryName) {
-    throw new ApiError(500, "The categoryName property is required.");
+    throw new InvalidParameterErrorResponse(
+      "categoryName",
+      categoryDto.categoryName
+    );
   }
 }
 

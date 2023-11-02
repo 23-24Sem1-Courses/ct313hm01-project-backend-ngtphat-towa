@@ -1,96 +1,66 @@
 import { NextFunction, Request, Response } from "express";
 import { CategoryService } from "../services/category.service";
 import { CategoryRepository } from "../repositories/category.repository";
-import { ResponseDTO } from "../Dtos/response.dto";
-import { ApiResponse } from "../common/api.response";
 import {
   CategoryDTO,
   validateCategoryDTO,
 } from "../Dtos/category/category.dto";
-import { validateCategory } from "../models/catagory.model";
+import { Category } from "../models/catagory.model";
+import {
+  ConflictErrorResponse,
+  ResourceNotFoundErrorResponse,
+  validateIdDTO,
+} from "../common/api.error";
 
-const categoryService = new CategoryService(new CategoryRepository());
+const service = new CategoryService(new CategoryRepository());
+const resourceName = "category";
 
 /** all */
-const getCategories = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const categories = await categoryService.getAllCategories();
+const getAll = async (req: Request, res: Response, next: NextFunction) => {
+  const categories = await service.getAll();
   return res.status(200).json(categories);
 };
-const getCategoryById = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const id = Number(req.params.id);
-  const existingCategory = await categoryService.getCategoryById(id);
-  if (existingCategory === null) {
-    const err: ApiResponse = {
-      message: `Category id ${id} was not found`,
-      success: false,
-    };
-    return res.status(404).json(err);
+const getById = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const id = validateIdDTO(req.params);
+    const existing = await validateExisting(id);
+
+    return res.status(200).json(existing);
+  } catch (error) {
+    next(error);
   }
-  return res.status(200).json(existingCategory);
 };
 
 /** create */
-const createCategory = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const create = async (req: Request, res: Response, next: NextFunction) => {
   try {
     /// Retrive and validate
-    const catagoryDTO = new CategoryDTO(req.body);
-    validateCategoryDTO(catagoryDTO);
-    if ((await isCategoryExist(catagoryDTO.categoryName)) === true) {
-      const response: ApiResponse = {
-        message: `Category ${catagoryDTO.categoryName} was created`,
-        success: true,
-      };
-
-      return res.status(201).json(response);
-    }
+    const dto = new CategoryDTO(req.body);
+    validateCategoryDTO(dto);
+    validateNameExist(dto.categoryName);
 
     /// Call Services
-    const category = await categoryService.createCategory(catagoryDTO);
+    const model = await service.create(dto);
 
-    //
-    return res.status(200).json(category);
+    return res.status(200).json(model);
   } catch (error) {
     next(error);
   }
 };
 
 /** update/:id */
-const updateCategory = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const update = async (req: Request, res: Response, next: NextFunction) => {
   try {
     /// Retrive
-    const id = Number(req.params.id);
+    const id = validateIdDTO(req.params);
     const catagoryDTO = new CategoryDTO(req.body);
 
     // Validate
     validateCategoryDTO(catagoryDTO);
-
-    const existingCategory = await categoryService.getCategoryById(id);
-    if (existingCategory === null) {
-      const err: ApiResponse = {
-        message: `Category id ${id} was not found`,
-        success: false,
-      };
-      return res.status(404).json(err);
-    }
+    await validateExisting(id);
 
     /// Call Services
-    const category = await categoryService.updateCategory(id, catagoryDTO);
+    const category = await service.update(id, catagoryDTO);
 
     //
     return res.status(200).json(category);
@@ -99,16 +69,24 @@ const updateCategory = async (
   }
 };
 
-async function isCategoryExist(searchName: string): Promise<boolean> {
-  const existingCategory = await categoryService.getCategoryByName(
-    searchName.trim()
-  );
-  return existingCategory !== null;
+async function validateNameExist(searchName: string): Promise<void> {
+  const existing = await service.getByName(searchName.trim());
+  if (existing !== null) {
+    throw new ConflictErrorResponse();
+  }
+}
+
+async function validateExisting(id: number): Promise<Category> {
+  const existing = await service.getById(id);
+  if (existing === null) {
+    throw new ResourceNotFoundErrorResponse(resourceName);
+  }
+  return existing;
 }
 
 export default {
-  getCategories,
-  createCategory,
-  updateCategory,
-  getCategoryById,
+  getAll,
+  create,
+  update,
+  getById,
 };

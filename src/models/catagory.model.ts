@@ -2,9 +2,9 @@ import ApiError from "../common/api.error";
 import { Product } from "./product.model";
 
 export interface Category {
-  id: number;
-  categoryName: string;
-  description: string;
+  id?: number;
+  categoryName?: string;
+  description?: string;
   imageUrl?: string;
   products?: Product[];
 }

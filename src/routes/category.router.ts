@@ -3,15 +3,15 @@ import controller from "../controllers/catagory.controller";
 const CategoryRouter = express.Router();
 
 /** get all cart */
-CategoryRouter.route("/").get(controller.getCategories);
+CategoryRouter.route("/").get(controller.getAll);
 
 /** get by id */
-CategoryRouter.route("/:id").get(controller.getCategoryById);
+CategoryRouter.route("/:id").get(controller.getById);
 
 /** /add */
-CategoryRouter.route("/").post(controller.createCategory);
+CategoryRouter.route("/").post(controller.create);
 
 /** /update/{:id} */
-CategoryRouter.route("/:id").put(controller.updateCategory);
+CategoryRouter.route("/:id").put(controller.update);
 
 export default CategoryRouter;
