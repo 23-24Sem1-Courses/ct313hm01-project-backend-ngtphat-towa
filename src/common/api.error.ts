@@ -108,3 +108,32 @@ export function validateIdDTO(params: any = {}): number {
 
   return id;
 }
+export class UserNotPermittedError extends ApiError {
+  constructor() {
+    super(
+      "UserNotPermittedError",
+      403,
+      "user is not permitted to perform this operation"
+    );
+  }
+}
+export class AuthTokenNotPresentError extends ApiError {
+  constructor() {
+    super("AuthTokenNotPresentError", 401, "authentication token not present");
+  }
+}
+export class AuthTokenNotValidError extends ApiError {
+  constructor() {
+    super("AuthTokenNotValidError", 401, "authentication token not valid");
+  }
+}
+export class IdNotPresentError extends ApiError {
+  constructor() {
+    super("IdNotPresentError", 400, "primary key is required for updating");
+  }
+}
+export class WrongPasswordError extends ApiError {
+  constructor() {
+    super("WrongPasswordError", 401, "please check the pass");
+  }
+}
