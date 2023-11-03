@@ -11,23 +11,23 @@ export class UserRepository {
 
   // Get all
   async getAll(): Promise<User[]> {
-    const categories = await this.db<User>(TableName).select();
-    return categories;
+    const models = await this.db<User>(TableName).select();
+    return models;
   }
 
   // Get by Name
   async getByName(name: string): Promise<User | null> {
-    const category = await this.db<User>(TableName)
+    const model = await this.db<User>(TableName)
       .where("username", name)
       .orWhere("email", "like", "%${name}%")
       .first();
-    return category ?? null;
+    return model ?? null;
   }
 
   // Get by id
   async getById(id: number): Promise<User | null> {
-    const category = await this.db<User>(TableName).where("id", id).first();
-    return category ?? null;
+    const model = await this.db<User>(TableName).where("id", id).first();
+    return model ?? null;
   }
 
   // Create
