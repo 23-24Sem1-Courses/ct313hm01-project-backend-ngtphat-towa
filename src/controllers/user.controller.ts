@@ -1,7 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 
 /** findAllUser */
-const findAllUser = (req: Request, res: Response, next: NextFunction) => {
+const findAllUsers = (req: Request, res: Response, next: NextFunction) => {
+  return res.status(200).json({ message: "findAllUser" });
+};
+
+const validateToken = (req: Request, res: Response, next: NextFunction) => {
   return res.status(200).json({ message: "findAllUser" });
 };
 
@@ -14,7 +18,8 @@ const signIn = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export default {
-  findAllUser,
+  findAllUsers,
+  validateToken,
   signUp,
   signIn,
 };

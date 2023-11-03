@@ -2,8 +2,7 @@ import express from "express";
 import cors from "cors";
 import Knex from "knex";
 import http from "http";
-import { knexConfig } from "./config/knexfile";
-import { ServerConfig } from "./config/config";
+import config from "./config/config";
 import Logging from "./common/Logging";
 import Routers from "../src/routes/router";
 
@@ -15,8 +14,8 @@ import {
 
 /* Declare libraries */
 const router = express();
-const db = Knex(knexConfig);
-const PORT = ServerConfig.port;
+const db = Knex(config.knex);
+const PORT = config.server.port;
 
 /** Middlewares **/
 /* Express  */

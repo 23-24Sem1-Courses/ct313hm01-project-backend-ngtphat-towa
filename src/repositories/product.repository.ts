@@ -1,7 +1,5 @@
 import { knex } from "knex";
-import Logging from "../common/Logging";
-// import { Product } from "../models/catagory.model";
-import { knexConfig } from "../config/knexfile";
+import config from "../config/config";
 import { Product } from "../models/product.model";
 import {
   CreateProductDTO,
@@ -12,7 +10,7 @@ import {
 
 const TableName = "products";
 export class ProductRepository {
-  private db = knex(knexConfig);
+  private db = knex(config.knex);
 
   constructor() {}
 

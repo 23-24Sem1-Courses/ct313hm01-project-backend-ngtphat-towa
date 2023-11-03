@@ -1,12 +1,11 @@
 import { knex } from "knex";
 import Logging from "../common/Logging";
-
-import { knexConfig } from "../config/knexfile";
+import config from "../config/config";
 import { User } from "../models/user.model";
 
 const TableName = "user";
 export class UserRepository {
-  private db = knex(knexConfig);
+  private db = knex(config.knex);
 
   constructor() {}
 

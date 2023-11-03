@@ -1,12 +1,11 @@
 import { knex } from "knex";
-import Logging from "../common/Logging";
-import { Category } from "../models/catagory.model";
-import { knexConfig } from "../config/knexfile";
+import config from "../config/config";
 import { Product } from "../models/product.model";
+import { Category } from "../models/catagory.model";
 
 const TableName = "categories";
 export class CategoryRepository {
-  private db = knex(knexConfig);
+  private db = knex(config.knex);
 
   constructor() {}
 
@@ -14,13 +13,13 @@ export class CategoryRepository {
   async getAll(): Promise<Category[]> {
     const categories = await this.db<Category>(TableName).select();
 
-    // for (const category of categories) {
-    //   const products = await this.db<Product>("products").where(
-    //     "categoryId",
-    //     category.id
-    //   );
-    //   category.products = products;
-    // }
+    for (const category of categories) {
+      const products = await this.db<Product>("products").where(
+        "categoryId",
+        category.id
+      );
+      category.products = products;
+    }
 
     return categories;
   }
@@ -45,15 +44,12 @@ export class CategoryRepository {
       .insert(model)
       .returning("id");
     model.id = Number(id);
-    Logging.info(model);
     return model;
   }
 
   // Update
   async update(model: Category): Promise<Category> {
-    await this.db<Category>(TableName)
-      .where("id", model.id)
-      .update(model);
+    await this.db<Category>(TableName).where("id", model.id).update(model);
     return model;
   }
 }
