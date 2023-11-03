@@ -1,24 +1,24 @@
-export interface SignupDTO {
+export interface RegisterDTO {
   firstName: string;
   lastName: string;
   email: string;
   password: string;
 }
 
-export function validateSignupDTO(signupDto: SignupDTO): void {
-  if (!signupDto.firstName) {
+export function validateSignupDTO(registerDto: RegisterDTO): void {
+  if (!registerDto.firstName) {
     throw new Error("The firstName property is required.");
   }
 
-  if (!signupDto.lastName) {
+  if (!registerDto.lastName) {
     throw new Error("The lastName property is required.");
   }
 
-  if (!signupDto.email) {
+  if (!registerDto.email) {
     throw new Error("The email property is required.");
   }
 
-  if (!signupDto.password) {
+  if (!registerDto.password) {
     throw new Error("The password property is required.");
   }
 }

@@ -1,6 +1,6 @@
 import { Role } from "../../enums/role.enum";
 
-export interface UserCreateDTO {
+export interface CreateUserDTO {
   firstName: string;
   lastName: string;
   email: string;
@@ -8,7 +8,7 @@ export interface UserCreateDTO {
   password: string;
 }
 
-export function validateUserCreateDto(userCreateDto: UserCreateDTO): void {
+export function validateUserCreateDto(userCreateDto: CreateUserDTO): void {
   if (!userCreateDto.firstName) {
     throw new Error("The firstName property is required.");
   }

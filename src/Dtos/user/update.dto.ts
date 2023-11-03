@@ -1,13 +1,13 @@
 import { Role } from "../../enums/role.enum";
 
-export interface UserUpdateDTO {
+export interface UpdateUserDTO {
   id?: number;
   firstName: string;
   lastName: string;
   role: Role;
 }
 
-export function validateUserUpdateDto(userUpdateDto: UserUpdateDTO): void {
+export function validateUserUpdateDto(userUpdateDto: UpdateUserDTO): void {
   if (!userUpdateDto.firstName) {
     throw new Error("The firstName property is required.");
   }
