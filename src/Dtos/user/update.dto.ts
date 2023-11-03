@@ -7,16 +7,16 @@ export interface UpdateUserDTO {
   role: Role;
 }
 
-export function validateUserUpdateDto(userUpdateDto: UpdateUserDTO): void {
-  if (!userUpdateDto.firstName) {
+export function validateUpdateUserDTO(updateUserDTO: UpdateUserDTO): void {
+  if (!updateUserDTO.firstName) {
     throw new Error("The firstName property is required.");
   }
 
-  if (!userUpdateDto.lastName) {
+  if (!updateUserDTO.lastName) {
     throw new Error("The lastName property is required.");
   }
 
-  if (!userUpdateDto.role) {
+  if (!updateUserDTO.role) {
     throw new Error("The role property is required.");
   }
 }

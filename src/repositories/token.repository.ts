@@ -3,7 +3,7 @@ import config from "../config/config";
 import { AuthenticationToken } from "../models/authenticationToken.model";
 import { User } from "../models/user.model";
 import { UserRepository } from "./user.repository";
-import { AuthenticationTokenDTO } from "../Dtos/token/token.dto";
+import { AuthenticationTokenDTO } from "../Dtos/user/token.dto";
 
 const TableName = "tokens";
 export class TokenRepository {

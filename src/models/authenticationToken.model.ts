@@ -4,8 +4,8 @@ export interface AuthenticationToken {
   id: number;
   token: string;
   createdDate: Date;
-  expiredTime: Date;
-  user: User;
+  expiredTime?: Date;
+  user?: User;
 }
 
 export function validateAuthenticationToken(

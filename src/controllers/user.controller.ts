@@ -9,17 +9,17 @@ const validateToken = (req: Request, res: Response, next: NextFunction) => {
   return res.status(200).json({ message: "findAllUser" });
 };
 
-const signUp = (req: Request, res: Response, next: NextFunction) => {
-  return res.status(200).json({ message: "signUp" });
+const register = (req: Request, res: Response, next: NextFunction) => {
+  return res.status(200).json({ message: "register" });
 };
 
-const signIn = (req: Request, res: Response, next: NextFunction) => {
-  return res.status(200).json({ message: "signIn" });
+const login = (req: Request, res: Response, next: NextFunction) => {
+  return res.status(200).json({ message: "login" });
 };
 
 export default {
   findAllUsers,
   validateToken,
-  signUp,
-  signIn,
+  register,
+  login,
 };
