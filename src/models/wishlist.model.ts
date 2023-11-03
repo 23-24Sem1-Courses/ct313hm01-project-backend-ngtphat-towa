@@ -1,5 +1,5 @@
 import { Product } from "./product.model";
-import { User } from "./user.mode";
+import { User } from "./user.model";
 
 export interface WishList {
   id: number;
