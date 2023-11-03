@@ -1,3 +1,5 @@
+import { MissingRequiredParameterErrorResponse } from "../../common/api.error";
+
 export interface SignInDTO {
   email: string;
   password: string;
@@ -5,10 +7,10 @@ export interface SignInDTO {
 
 export function validateSignInDto(signInDto: SignInDTO): void {
   if (!signInDto.email) {
-    throw new Error("The email property is required.");
+    throw new MissingRequiredParameterErrorResponse("email");
   }
 
   if (!signInDto.password) {
-    throw new Error("The password property is required.");
+    throw new MissingRequiredParameterErrorResponse("password");
   }
 }

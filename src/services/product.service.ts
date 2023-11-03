@@ -1,7 +1,5 @@
-import {
-  CreateProductDTO,
-  UpdateProductDTO,
-} from "../Dtos/product/product.dto";
+import { CreateProductDTO } from "../Dtos/product/create.dto";
+import { UpdateProductDTO } from "../Dtos/product/update.dto";
 import { Product } from "../models/product.model";
 import { ProductRepository } from "../repositories/product.repository";
 
@@ -20,7 +18,8 @@ export class ProductService {
 
   // Get a product by name
   async getByName(name: string): Promise<Product[] | null> {
-    return this.productRepository.getByName(name);
+    const models = await this.productRepository.getByName(name);
+    return models;
   }
 
   // Get a product by ID

@@ -1,12 +1,15 @@
 import { knex } from "knex";
 import config from "../config/config";
 import { Product } from "../models/product.model";
+
 import {
   CreateProductDTO,
-  UpdateProductDTO,
   mapCreateProductDTOToProduct,
+} from "../Dtos/product/create.dto";
+import {
+  UpdateProductDTO,
   mapUpdateProductDTOToProduct,
-} from "../Dtos/product/product.dto";
+} from "../Dtos/product/update.dto";
 
 const TableName = "products";
 export class ProductRepository {
@@ -22,10 +25,10 @@ export class ProductRepository {
 
   // Get by Name
   async getByName(name: string): Promise<Product[] | null> {
-    const model = await this.db<Product>(TableName)
+    const models = await this.db<Product>(TableName)
       .where("name", name)
       .select();
-    return model ?? null;
+    return models ? models : null;
   }
 
   // Get by id
@@ -49,10 +52,8 @@ export class ProductRepository {
     await this.db<UpdateProductDTO>(TableName)
       .where("id", model.id)
       .update(model);
-    console.log(model);
 
     const updatedModel = mapUpdateProductDTOToProduct(model);
-    console.log(updatedModel);
 
     return updatedModel;
   }

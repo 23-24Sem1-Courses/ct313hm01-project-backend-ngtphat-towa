@@ -1,3 +1,7 @@
+import {
+  InvalidParameterErrorResponse,
+  MissingRequiredParameterErrorResponse,
+} from "../common/api.error";
 import { Role } from "../enums/role.enum";
 
 export interface User {
@@ -10,23 +14,15 @@ export interface User {
 }
 
 export function validateUser(user: User): void {
+  if (!(user.email && user.password)) {
+    throw new MissingRequiredParameterErrorResponse("email and password");
+  }
+
   if (!user.firstName) {
-    throw new Error("The firstName property is required.");
+    throw new InvalidParameterErrorResponse("firstName", user.firstName);
   }
 
   if (!user.lastName) {
-    throw new Error("The lastName property is required.");
-  }
-
-  if (!user.email) {
-    throw new Error("The email property is required.");
-  }
-
-  if (!user.role) {
-    throw new Error("The role property is required.");
-  }
-
-  if (!user.password) {
-    throw new Error("The password property is required.");
+    throw new InvalidParameterErrorResponse("lastName", user.lastName);
   }
 }

@@ -35,6 +35,7 @@ function handleError(
     .set(error.headers || {})
     .json({
       message: error.message || "Internal Server Error",
+      details: error.details,
     });
 }
 

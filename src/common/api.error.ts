@@ -1,20 +1,40 @@
+import Joi from "joi";
+
 export default class ApiError extends Error {
   type?: string;
   statusCode?: number;
   message: string;
+  details?: string[];
   headers?: Record<string, unknown>;
 
   constructor(
     type: string,
     statusCode: number = 500,
     message: string,
-    headers: Record<string, unknown> = {}
+    details?: string[],
+    headers?: Record<string, unknown>
   ) {
     super(message);
-    this.type = type ?? null;
+    this.type = type ?? "";
     this.statusCode = statusCode;
-    this.message = message;
-    this.headers = headers;
+    this.message = message ?? "";
+    this.details = details ?? [];
+    this.headers = headers ?? {};
+  }
+}
+export class JoiValidationError extends ApiError {
+  constructor(error: Joi.ValidationError) {
+    super(
+      "JoiValidationError",
+      400,
+      error.message,
+      error.details.map(
+        (detail) =>
+          `${detail.message}. Invalid parameter ${detail.path.join(
+            "."
+          )} value: ${detail.context?.value}`
+      )
+    );
   }
 }
 
@@ -73,7 +93,7 @@ export class MethodNotAllowedErrorResponse extends ApiError {
 
 export class DatabaseErrorResponse extends ApiError {
   constructor(error: Error) {
-    super("DatabaseError", 500, "Database error", {
+    super("DatabaseError", 500, "Database error", [], {
       error,
     });
   }

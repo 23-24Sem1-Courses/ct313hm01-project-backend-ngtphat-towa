@@ -37,7 +37,7 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
     /// Retrive and validate
     const dto = new CategoryDTO(req.body);
     validateCategoryDTO(dto);
-    validateNameExist(dto.categoryName);
+    await validateNameExist(dto.categoryName);
 
     /// Call Services
     const model = await service.create(dto);

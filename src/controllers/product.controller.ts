@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ProductRepository } from "../repositories/product.repository";
 import { ProductService } from "../services/product.service";
+import { parseBodyToDTO } from "../Dtos/comom.dto";
 
 import { Product } from "../models/product.model";
 import {
@@ -9,11 +10,13 @@ import {
   ConflictErrorResponse,
 } from "../common/api.error";
 import {
-  parseBodyToCreateProductDTO,
-  parseBodyToUpdateProductDTO,
-  validateCreateProductDTO,
-  validateUpdateProductDTO,
-} from "../Dtos/product/product.dto";
+  CreateProductDTO,
+  createProductSchema,
+} from "../Dtos/product/create.dto";
+import {
+  UpdateProductDTO,
+  updateProductSchema,
+} from "../Dtos/product/update.dto";
 
 const service = new ProductService(new ProductRepository());
 const resourceName = "product";
@@ -58,9 +61,8 @@ const getByName = async (req: Request, res: Response, next: NextFunction) => {
 const create = async (req: Request, res: Response, next: NextFunction) => {
   try {
     /// Retrive and validate
-    const dto = parseBodyToCreateProductDTO(req);
-    validateCreateProductDTO(dto);
-    validateNameExist(dto.name);
+    const dto = parseBodyToDTO<CreateProductDTO>(req, createProductSchema);
+    await validateNameExist(dto.name);
 
     /// Call Services
     const model = await service.create(dto);
@@ -74,8 +76,7 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
 const update = async (req: Request, res: Response, next: NextFunction) => {
   try {
     /// Retrive and validate
-    const dto = parseBodyToUpdateProductDTO(req);
-    validateUpdateProductDTO(dto);
+    const dto = parseBodyToDTO<UpdateProductDTO>(req, updateProductSchema);
     await validateExisting(dto.id);
 
     /// Call Services
@@ -115,7 +116,7 @@ const deleteAll = async (req: Request, res: Response, next: NextFunction) => {
 
 async function validateNameExist(searchName: string): Promise<void> {
   const existing = await service.getByName(searchName.trim());
-  if (existing !== null) {
+  if (existing !== null && existing.length > 0) {
     throw new ConflictErrorResponse();
   }
 }
