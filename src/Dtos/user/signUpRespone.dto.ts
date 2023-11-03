@@ -1,8 +1,9 @@
-export interface SignInResponseDTO {
-  status: string;
-  token: string;
-  timestamp?: Date;
-}
+  export interface SignInResponseDTO {
+    status: string;
+    token: string;
+    timestamp?: Date;
+    expireTime?:Date;
+  }
 
 export function validateSignInResponseDto(
   signInResponseDto: SignInResponseDTO

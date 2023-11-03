@@ -5,12 +5,3 @@ export interface SignInDTO {
   password: string;
 }
 
-export function validateSignInDto(signInDto: SignInDTO): void {
-  if (!signInDto.email) {
-    throw new MissingRequiredParameterErrorResponse("email");
-  }
-
-  if (!signInDto.password) {
-    throw new MissingRequiredParameterErrorResponse("password");
-  }
-}
