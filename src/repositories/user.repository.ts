@@ -1,10 +1,9 @@
 import { knex } from "knex";
-import Logging from "../common/Logging";
 import config from "../config/config";
 import { User } from "../models/user.model";
 
-const TableName = "user";
-export class UserRepository {
+const TableName = "users";
+class UserRepository {
   private db = knex(config.knex);
 
   constructor() {}
@@ -18,8 +17,8 @@ export class UserRepository {
   // Get by Name
   async getByName(name: string): Promise<User | null> {
     const model = await this.db<User>(TableName)
-      .where("username", name)
-      .orWhere("email", "like", "%${name}%")
+      .where("email", name)
+      // .orWhere("email", "like", `%${name}%`)
       .first();
     return model ?? null;
   }
@@ -34,7 +33,6 @@ export class UserRepository {
   async create(model: User): Promise<User> {
     const [id] = await this.db<User>(TableName).insert(model).returning("id");
     model.id = Number(id);
-    Logging.info(model);
     return model;
   }
 
@@ -44,3 +42,4 @@ export class UserRepository {
     return model;
   }
 }
+export default new UserRepository();
