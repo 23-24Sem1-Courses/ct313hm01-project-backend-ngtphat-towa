@@ -1,3 +1,4 @@
+import { AuthenticationTokenDTO } from "../Dtos/token/token.dto";
 import { User } from "./user.model";
 
 export interface AuthenticationToken {
@@ -6,6 +7,21 @@ export interface AuthenticationToken {
   createdDate: Date;
   expiredTime?: Date;
   user?: User;
+}
+
+export function mapAuthenticationTokenDTOToModel(
+  dto: AuthenticationTokenDTO | null,
+  user?: User
+): AuthenticationToken | null {
+  return dto !== null
+    ? {
+        id: dto.id!,
+        token: dto.token,
+        createdDate: dto.createdDate,
+        expiredTime: dto.expiredTime,
+        user: user,
+      }
+    : null;
 }
 
 export function validateAuthenticationToken(

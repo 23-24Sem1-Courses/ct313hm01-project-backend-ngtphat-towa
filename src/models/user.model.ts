@@ -5,12 +5,13 @@ import {
 import { Role } from "../enums/role.enum";
 
 export interface User {
-  id: number;
+  id?: number;
   firstName: string;
   lastName: string;
   email: string;
   role: Role;
-  password: string;
+  password: string | null;
+  createdDate?: Date;
 }
 
 export function validateUser(user: User): void {
