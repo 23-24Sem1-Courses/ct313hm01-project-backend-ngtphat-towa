@@ -20,7 +20,7 @@ function resourceNotFound(req: Request, res: Response, next: NextFunction) {
 }
 
 function handleError(
-  error: ApiError,
+  error: ApiError | Error,
   req: Request,
   res: Response,
   next: NextFunction
@@ -30,13 +30,32 @@ function handleError(
     return next(error);
   }
 
-  return res
-    .status(error.statusCode || 500)
-    .set(error.headers || {})
-    .json({
-      message: error.message || "Internal Server Error",
-      details: error.details,
-    });
+  if (error instanceof ApiError) {
+    return handleApiError(error, res);
+  } else {
+    return handleGenericError(res);
+  }
+}
+function handleGenericError(res: Response) {
+  return res.status(500).json({});
+}
+function handleApiError(error: ApiError, res: Response) {
+  if (error.details !== null && error.details?.length! > 0) {
+    return res
+      .status(error.statusCode || 500)
+      .set(error.headers || {})
+      .json({
+        message: error.message || "Internal Server Error",
+        details: error.details,
+      });
+  } else {
+    return res
+      .status(error.statusCode || 500)
+      .set(error.headers || {})
+      .json({
+        message: error.message || "Internal Server Error",
+      });
+  }
 }
 
 export { methodNotAllowed, resourceNotFound, handleError };
