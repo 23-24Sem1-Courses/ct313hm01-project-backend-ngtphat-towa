@@ -5,6 +5,7 @@ export interface LogInResponseDTO {
   expireTime?: Date;
 }
 
+
 export function validateLogInResponseDto(
   logInResponseDTO: LogInResponseDTO
 ): void {
