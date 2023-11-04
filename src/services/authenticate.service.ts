@@ -8,6 +8,7 @@ import {
   AuthTokenNotValidError,
   EmailAlreadyExistsError,
   EmailDoesNotExistsError,
+  UnauthorizedAccessErrorResponse,
   WrongPasswordError,
 } from "../common/api.error";
 import config from "../config/config";
@@ -170,15 +171,10 @@ export class AuthenticationService {
 
       Logging.info(payload);
 
-      const user: User = {
-        id: payload.id,
-        firstName: payload.firstName,
-        lastName: payload.lastName,
-        email: payload.email,
-        role: payload.role,
-        password: payload.password,
-        createdDate: payload.createdDate,
-      };
+      const user = await this.userRepo.getById(payload.id);
+      if (user === null) {
+        throw new UnauthorizedAccessErrorResponse();
+      }
 
       return user;
     } catch (error) {
