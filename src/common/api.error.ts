@@ -30,9 +30,9 @@ export class JoiValidationError extends ApiError {
       error.message,
       error.details.map(
         (detail) =>
-          `${detail.message}. Invalid parameter ${detail.path.join(
-            "."
-          )} value: ${detail.context?.value}`
+          `${detail.message}. \n
+          "Invalid parameter ${detail.path.join(".")} value: ${detail.context
+            ?.value}`
       )
     );
   }
@@ -119,7 +119,11 @@ export class UserNotPermittedError extends ApiError {
 }
 export class AuthTokenNotPresentError extends ApiError {
   constructor() {
-    super("AuthTokenNotPresentError", 401, "authentication token not present");
+    super(
+      "AuthTokenNotPresentError",
+      401,
+      `Authentication token not present! \n Please login again!`
+    );
   }
 }
 export class AuthTokenNotValidError extends ApiError {
@@ -135,5 +139,16 @@ export class IdNotPresentError extends ApiError {
 export class WrongPasswordError extends ApiError {
   constructor() {
     super("WrongPasswordError", 401, "please check the pass");
+  }
+}
+
+export class EmailDoesNotExistsError extends ApiError {
+  constructor() {
+    super("EmailDoesNotExistsError", 404, "User does not exist.");
+  }
+}
+export class EmailAlreadyExistsError extends ApiError {
+  constructor() {
+    super("EmailAlreadyExistsError", 409, "Email address already exists");
   }
 }
