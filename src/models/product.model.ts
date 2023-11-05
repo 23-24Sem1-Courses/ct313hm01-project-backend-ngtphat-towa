@@ -1,6 +1,6 @@
 import { Cart } from "./cart.model";
 import { Category } from "./catagory.model";
-import { WishList } from "./wishlist.model";
+import { Wishlist } from "./wishlist.model";
 
 export interface Product {
   id?: number;
@@ -9,7 +9,7 @@ export interface Product {
   price?: number;
   description?: string;
   category?: Category;
-  wishListList?: WishList[];
+  wishListList?: Wishlist[];
   carts?: Cart[];
 }
 

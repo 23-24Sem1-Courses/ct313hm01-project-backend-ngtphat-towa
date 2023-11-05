@@ -19,7 +19,7 @@ import config from "../config/config";
 import {
   AuthenticationToken,
   mapAuthenticationTokenDTOToModel,
-} from "../models/authenticationToken.model";
+} from "../models/token.model";
 import { string } from "joi";
 
 export class UserService {

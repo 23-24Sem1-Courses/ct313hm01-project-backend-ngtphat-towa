@@ -4,16 +4,3 @@ export interface LogInResponseDTO {
   timestamp?: Date;
   expireTime?: Date;
 }
-
-
-export function validateLogInResponseDto(
-  logInResponseDTO: LogInResponseDTO
-): void {
-  if (!logInResponseDTO.status) {
-    throw new Error("The status property is required.");
-  }
-
-  if (!logInResponseDTO.token) {
-    throw new Error("The token property is required.");
-  }
-}

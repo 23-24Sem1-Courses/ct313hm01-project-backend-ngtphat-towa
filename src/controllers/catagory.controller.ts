@@ -17,8 +17,8 @@ const resourceName = "category";
 
 /** all */
 const getAll = async (req: Request, res: Response, next: NextFunction) => {
-  const categories = await service.getAll();
-  return res.status(200).json(categories);
+  const models = await service.getAll();
+  return res.status(200).json(models);
 };
 const getById = async (req: Request, res: Response, next: NextFunction) => {
   try {

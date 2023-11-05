@@ -11,9 +11,9 @@ export class CategoryRepository {
 
   // Get all
   async getAll(): Promise<Category[]> {
-    const categories = await this.db<Category>(TableName).select();
+    const models = await this.db<Category>(TableName).select();
 
-    for (const category of categories) {
+    for (const category of models) {
       const products = await this.db<Product>("products").where(
         "categoryId",
         category.id
@@ -21,7 +21,7 @@ export class CategoryRepository {
       category.products = products;
     }
 
-    return categories;
+    return models;
   }
 
   // Get by Name

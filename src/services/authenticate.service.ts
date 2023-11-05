@@ -16,7 +16,7 @@ import { Role } from "../enums/role.enum";
 import {
   AuthenticationToken,
   mapAuthenticationTokenDTOToModel,
-} from "../models/authenticationToken.model";
+} from "../models/token.model";
 import { User } from "../models/user.model";
 import TokenRepository from "../repositories/token.repository";
 import UserRepository from "../repositories/user.repository";
