@@ -4,7 +4,7 @@ import { Product } from "../models/product.model";
 import { Category } from "../models/catagory.model";
 
 const TableName = "categories";
-export class CategoryRepository {
+class CategoryRepository {
   private db = knex(config.knex);
 
   constructor() {}
@@ -53,3 +53,4 @@ export class CategoryRepository {
     return model;
   }
 }
+export default new CategoryRepository();

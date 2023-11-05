@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { CategoryService } from "../services/category.service";
-import { CategoryRepository } from "../repositories/category.repository";
+import CategoryService from "../services/category.service";
+
 import {
   CategoryDTO,
   validateCategoryDTO,
@@ -12,7 +12,7 @@ import {
   validateIdDTO,
 } from "../common/api.error";
 
-const service = new CategoryService(new CategoryRepository());
+const service = CategoryService;
 const resourceName = "category";
 
 /** all */

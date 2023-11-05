@@ -1,14 +1,12 @@
 import { CreateProductDTO } from "../Dtos/product/create.dto";
 import { UpdateProductDTO } from "../Dtos/product/update.dto";
 import { Product } from "../models/product.model";
-import { ProductRepository } from "../repositories/product.repository";
+import ProductRepository from "../repositories/product.repository";
 
 export class ProductService {
-  private productRepository: ProductRepository;
+  private productRepository = ProductRepository;
 
-  constructor(productRepository: ProductRepository) {
-    this.productRepository = productRepository;
-  }
+  constructor() {}
 
   // Get all categories
   async getAll(): Promise<Product[]> {
@@ -54,3 +52,4 @@ export class ProductService {
     await this.productRepository.deleteAll();
   }
 }
+export default new ProductService();

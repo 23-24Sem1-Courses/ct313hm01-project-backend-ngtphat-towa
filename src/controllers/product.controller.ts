@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ProductRepository } from "../repositories/product.repository";
-import { ProductService } from "../services/product.service";
+import ProductService from "../services/product.service";
 import { parseBodyToDTO } from "../Dtos/common.dto";
 
 import { Product } from "../models/product.model";
@@ -18,7 +17,7 @@ import {
   updateProductSchema,
 } from "../Dtos/product/update.dto";
 
-const service = new ProductService(new ProductRepository());
+const service = ProductService;
 const resourceName = "product";
 const getAll = async (req: Request, res: Response, next: NextFunction) => {
   try {

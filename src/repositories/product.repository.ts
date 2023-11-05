@@ -12,7 +12,7 @@ import {
 } from "../Dtos/product/update.dto";
 
 const TableName = "products";
-export class ProductRepository {
+class ProductRepository {
   private db = knex(config.knex);
 
   constructor() {}
@@ -69,3 +69,4 @@ export class ProductRepository {
     await this.db<Product>(TableName).truncate();
   }
 }
+export default new ProductRepository();

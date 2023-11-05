@@ -5,14 +5,12 @@ import {
 } from "../Dtos/category/category.dto";
 import { ResponseDTO } from "../Dtos/response.dto";
 import { Category } from "../models/catagory.model";
-import { CategoryRepository } from "../repositories/category.repository";
+import CategoryRepository from "../repositories/category.repository";
 
-export class CategoryService {
-  private categoryRepository: CategoryRepository;
+class CategoryService {
+  private categoryRepository = CategoryRepository;
 
-  constructor(categoryRepository: CategoryRepository) {
-    this.categoryRepository = categoryRepository;
-  }
+  constructor() {}
 
   // Get all categories
   async getAll(): Promise<Category[]> {
@@ -46,3 +44,4 @@ export class CategoryService {
     return models;
   }
 }
+export default new CategoryService();
