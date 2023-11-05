@@ -1,18 +1,15 @@
 import Joi from "joi";
+import { InvalidParameterErrorResponse } from "../../common/api.error";
 import { Category } from "../../models/category.model";
+import { ProductDTO } from "../product/product.dto";
 
-export interface CategoryDTO {
-  id?: number;
+export interface UpdateCategoryDTO {
   name: string;
   description: string;
   imageUrl?: string;
 }
 
-export const CategoryDTOSchema = Joi.object({
-  id: Joi.number().integer().optional().messages({
-    "number.base": "id must be a number",
-    "number.integer": "id must be an integer",
-  }),
+const updateCategorySchema = Joi.object({
   name: Joi.string().required().messages({
     "string.base": "name must be a string",
     "string.empty": "name cannot be an empty field",
@@ -28,10 +25,3 @@ export const CategoryDTOSchema = Joi.object({
     "string.uri": "imageUrl must be a valid URI",
   }),
 });
-
-export function mapCategoryDTOToCategory(categoryDTO: CategoryDTO): Category {
-  return {
-    ...categoryDTO,
-    products: [],
-  };
-}

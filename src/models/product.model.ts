@@ -1,5 +1,5 @@
 import { Cart } from "./cart.model";
-import { Category } from "./catagory.model";
+import { Category } from "./category.model";
 import { Wishlist } from "./wishlist.model";
 
 export interface Product {

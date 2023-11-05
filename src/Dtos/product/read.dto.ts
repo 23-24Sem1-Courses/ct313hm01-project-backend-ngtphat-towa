@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { Category } from "../../models/catagory.model";
+import { Category } from "../../models/category.model";
 import { Request } from "express";
 
 // ReadProductDTO for reading product data

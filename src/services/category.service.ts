@@ -1,11 +1,10 @@
 import { NullableType } from "joi";
-import {
-  CategoryDTO,
-  mapCategoryDTOToModel,
-} from "../Dtos/category/category.dto";
+import { CategoryDTO } from "../Dtos/category/category.dto";
 import { ResponseDTO } from "../Dtos/response.dto";
-import { Category } from "../models/catagory.model";
+import { Category } from "../models/category.model";
 import CategoryRepository from "../repositories/category.repository";
+import { CreateCategoryDTO } from "../Dtos/category/create.dto";
+import { UpdateCategoryDTO } from "../Dtos/category/update.dto";
 
 class CategoryService {
   private categoryRepository = CategoryRepository;
@@ -30,18 +29,16 @@ class CategoryService {
   }
 
   // Create a new category
-  async create(categoryDTO: CategoryDTO): Promise<Category | null> {
-    var model = mapCategoryDTOToModel(categoryDTO);
-    const catagory = await this.categoryRepository.create(model);
+  async create(dto: CreateCategoryDTO): Promise<Category | null> {
+    const catagory = await this.categoryRepository.create(dto);
     return catagory;
   }
 
   // Update a category
-  async update(id: number, categoryDTO: CategoryDTO): Promise<Category> {
-    var models = mapCategoryDTOToModel(categoryDTO);
-    models = await this.categoryRepository.update(models);
+  async update(id: number, dto: UpdateCategoryDTO): Promise<Category> {
+    const model = await this.categoryRepository.update(dto);
 
-    return models;
+    return model;
   }
 }
 export default new CategoryService();
