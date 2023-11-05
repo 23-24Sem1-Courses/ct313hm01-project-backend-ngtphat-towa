@@ -9,7 +9,7 @@ export class ProductService {
   constructor() {}
 
   // Get all categories
-  async getAll(): Promise<Product[]> {
+  async getAll(): Promise<Product[] | null> {
     const models = this.productRepository.getAll();
     return models;
   }
@@ -36,13 +36,13 @@ export class ProductService {
   async update(
     id: number,
     updateProductDTO: UpdateProductDTO
-  ): Promise<Product> {
-    const model = await this.productRepository.update(updateProductDTO);
+  ): Promise<Product | null> {
+    const model = await this.productRepository.update(id, updateProductDTO);
     return model;
   }
 
   // Delete a product
-  async deleteById(id: number): Promise<number> {
+  async deleteById(id: number): Promise<number | null> {
     const deletedId = await this.productRepository.deleteById(id);
     return deletedId;
   }

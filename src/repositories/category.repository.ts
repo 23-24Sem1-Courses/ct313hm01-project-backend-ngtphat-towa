@@ -3,6 +3,7 @@ import config from "../config/config";
 import { Product } from "../models/product.model";
 import { Category } from "../models/category.model";
 import { CreateCategoryDTO } from "../Dtos/category/create.dto";
+import { UpdateCategoryDTO } from "../Dtos/category/update.dto";
 
 const CategoryTable = "categories";
 class CategoryRepository {
@@ -49,15 +50,19 @@ class CategoryRepository {
     const model: Category = {
       id: id,
       ...dto,
-      products: [],
     };
     model.id = Number(id);
     return model;
   }
 
   // Update
-  async update(model: Category): Promise<Category> {
-    await this.db<Category>(CategoryTable).where("id", model.id).update(model);
+  async update(id: number, dto: UpdateCategoryDTO): Promise<Category> {
+    await this.db<Category>(CategoryTable).where("id", id).update(dto);
+
+    const model: Category = {
+      id: id,
+      ...dto,
+    };
     return model;
   }
 }

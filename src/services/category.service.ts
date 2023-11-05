@@ -1,6 +1,3 @@
-import { NullableType } from "joi";
-import { CategoryDTO } from "../Dtos/category/category.dto";
-import { ResponseDTO } from "../Dtos/response.dto";
 import { Category } from "../models/category.model";
 import CategoryRepository from "../repositories/category.repository";
 import { CreateCategoryDTO } from "../Dtos/category/create.dto";
@@ -36,7 +33,7 @@ class CategoryService {
 
   // Update a category
   async update(id: number, dto: UpdateCategoryDTO): Promise<Category> {
-    const model = await this.categoryRepository.update(dto);
+    const model = await this.categoryRepository.update(id, dto);
 
     return model;
   }

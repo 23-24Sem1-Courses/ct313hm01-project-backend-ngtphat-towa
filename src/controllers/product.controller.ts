@@ -32,7 +32,7 @@ const getAll = async (req: Request, res: Response, next: NextFunction) => {
 const getById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     /// Retrive and validate
-    const id: number = validateIdDTO(req.params);
+    const id: number = validateIdDTO(req);
 
     /// Call Services
     const existing = await validateExisting(id);
@@ -75,11 +75,12 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
 const update = async (req: Request, res: Response, next: NextFunction) => {
   try {
     /// Retrive and validate
-    const dto = parseBodyToDTO<UpdateProductDTO>(req, updateProductSchema);
-    await validateExisting(dto.id);
+    const id = validateIdDTO(req);
+  const dto = parseBodyToDTO<UpdateProductDTO>(req, updateProductSchema);
+    await validateExisting(id);
 
     /// Call Services
-    const model = await service.update(dto.id, dto);
+    const model = await service.update(id, dto);
 
     return res.status(204).json(model);
   } catch (error) {
@@ -90,7 +91,7 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
 const deleteById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     /// Retrive and validate
-    const id: number = validateIdDTO(req.params);
+    const id: number = validateIdDTO(req);
     await validateExisting(id);
 
     /// Call Services

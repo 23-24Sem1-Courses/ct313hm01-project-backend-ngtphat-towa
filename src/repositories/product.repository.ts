@@ -2,30 +2,41 @@ import { knex } from "knex";
 import config from "../config/config";
 import { Product } from "../models/product.model";
 
-import {
-  CreateProductDTO,
-  mapCreateProductDTOToProduct,
-} from "../Dtos/product/create.dto";
-import {
-  UpdateProductDTO,
-  mapUpdateProductDTOToProduct,
-} from "../Dtos/product/update.dto";
+import { CreateProductDTO } from "../Dtos/product/create.dto";
+import { UpdateProductDTO } from "../Dtos/product/update.dto";
 
-const TableName = "products";
+import CategoryRepository from "./category.repository";
+import { ProductDTO } from "../Dtos/product/product.dto";
+
+const ProductTable = "products";
 class ProductRepository {
   private db = knex(config.knex);
+  private categoryRepository = CategoryRepository;
 
   constructor() {}
 
   // Get all
-  async getAll(): Promise<Product[]> {
-    const products = await this.db<Product>(TableName).select();
-    return products;
+  async getAll(): Promise<Product[] | null> {
+    const dtos = await this.db<ProductDTO>(ProductTable).select();
+
+    let models: Product[] = [];
+    for (let dto of dtos) {
+      const category = (await this.categoryRepository.getById(
+        dto.categoryId!
+      ))!;
+
+      models.push({
+        ...dto,
+        category,
+      });
+    }
+
+    return models;
   }
 
   // Get by Name
   async getByName(name: string): Promise<Product[] | null> {
-    const models = await this.db<Product>(TableName)
+    const models = await this.db<Product>(ProductTable)
       .where("name", name)
       .select();
     return models ? models : null;
@@ -33,40 +44,43 @@ class ProductRepository {
 
   // Get by id
   async getById(id: number): Promise<Product | null> {
-    const model = await this.db<Product>(TableName).where("id", id).first();
+    const model = await this.db<Product>(ProductTable).where("id", id).first();
     return model ?? null;
   }
 
   // Create
-  async create(model: CreateProductDTO): Promise<Product> {
-    const [id] = await this.db<CreateProductDTO>(TableName).insert(model);
+  async create(dto: CreateProductDTO): Promise<Product> {
+    const [id] = await this.db<CreateProductDTO>(ProductTable).insert(dto);
 
-    const createdModel = mapCreateProductDTOToProduct(model);
-    createdModel.id = Number(id);
-
-    return createdModel;
+    const model = {
+      id: Number(id),
+      ...dto,
+    };
+    return model;
   }
 
   // Update
-  async update(model: UpdateProductDTO): Promise<Product> {
-    await this.db<UpdateProductDTO>(TableName)
-      .where("id", model.id)
-      .update(model);
+  async update(id: number, dto: UpdateProductDTO): Promise<Product> {
+    await this.db<ProductDTO>(ProductTable).where("id", id).update(dto);
 
-    const updatedModel = mapUpdateProductDTOToProduct(model);
+    const category = (await this.categoryRepository.getById(dto.categoryId!))!;
+    const model: Product = {
+      ...dto,
+      category,
+    };
 
-    return updatedModel;
+    return model;
   }
 
   // Delete by id
   async deleteById(id: number): Promise<number> {
-    const deletedId = await this.db<Product>(TableName)
+    const deletedId = await this.db<Product>(ProductTable)
       .where("id", id)
       .delete();
     return deletedId;
   }
   async deleteAll(): Promise<void> {
-    await this.db<Product>(TableName).truncate();
+    await this.db<Product>(ProductTable).truncate();
   }
 }
 export default new ProductRepository();

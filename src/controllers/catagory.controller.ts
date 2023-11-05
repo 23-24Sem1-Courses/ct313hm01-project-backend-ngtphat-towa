@@ -31,7 +31,7 @@ const getAll = async (req: Request, res: Response, next: NextFunction) => {
 };
 const getById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const id = validateIdDTO(req.params);
+    const id = validateIdDTO(req);
     const existing = await validateExisting(id);
 
     return res.status(200).json(existing);
@@ -60,7 +60,7 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
 const update = async (req: Request, res: Response, next: NextFunction) => {
   try {
     /// Retrive
-    const id = validateIdDTO(req.params);
+    const id = validateIdDTO(req);
     const dto = parseBodyToDTO<UpdateCategoryDTO>(req, updateProductSchema);
 
     await validateExisting(id);

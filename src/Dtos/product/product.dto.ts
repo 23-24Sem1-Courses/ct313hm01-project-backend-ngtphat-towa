@@ -9,28 +9,34 @@ export interface ProductDTO {
   categoryId: number;
 }
 
-const productDTOSchema = Joi.object({
-  id: Joi.number().optional().messages({
-    "number.base": "ID must be a number",
-  }),
+export const createProductSchema = Joi.object({
   name: Joi.string().required().messages({
-    "string.empty": "Name is required",
-    "string.base": "Name must be a string",
+    "string.base": "The name should be a text string. Please check the input.",
+    "string.empty":
+      "It seems like the name field is empty. Please provide a product name.",
+    "any.required": "The name is a required field. Don't forget to include it.",
   }),
   imageUrl: Joi.string().optional().uri().messages({
-    "string.base": "Image URL must be a string",
+    "string.uri": "The imageUrl should be a valid URL. Please check the input.",
   }),
-  price: Joi.number().required().min(0).messages({
-    "number.empty": "Price is required",
-    "number.base": "Price must be a number",
-    "number.min": "Price must be greater than or equal to 0",
+  price: Joi.number().required().messages({
+    "number.base":
+      "The price should be a numerical value. Please check the input.",
+    "number.empty":
+      "It seems like the price field is empty. Please provide a product price.",
+    "any.required":
+      "The price is a required field. Don't forget to include it.",
   }),
   description: Joi.string().optional().messages({
-    "string.base": "Description must be a string",
+    "string.base":
+      "The description should be a text string. Please check the input.",
   }),
-  categoryId: Joi.number().required().min(1).messages({
-    "number.empty": "Category ID is required",
-    "number.base": "Category ID must be a number",
-    "number.min": "Category ID must be greater than or equal to 1",
+  categoryId: Joi.number().required().messages({
+    "number.base":
+      "The categoryId should be a numerical value. Please check the input.",
+    "number.empty":
+      "It seems like the categoryId field is empty. Please provide a category ID.",
+    "any.required":
+      "The categoryId is a required field. Don't forget to include it.",
   }),
 });

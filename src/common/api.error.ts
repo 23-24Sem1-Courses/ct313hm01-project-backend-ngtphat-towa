@@ -1,4 +1,5 @@
 import Joi from "joi";
+import { Request } from "express";
 
 export default class ApiError extends Error {
   type?: string;
@@ -30,8 +31,8 @@ export class JoiValidationError extends ApiError {
       error.message,
       error.details.map(
         (detail) =>
-          `${detail.message}. \n
-          "Invalid parameter ${detail.path.join(".")} value: ${detail.context
+          `
+          Invalid parameter ${detail.path.join(".")} value: ${detail.context
             ?.value}`
       )
     );
@@ -99,8 +100,10 @@ export class DatabaseErrorResponse extends ApiError {
   }
 }
 
-export function validateIdDTO(params: any = {}): number {
-  const id = Number(params.id);
+export function validateIdDTO(req: Request): number {
+  if (req.body.id) throw new IdNotPresentError();
+
+  const id = Number(req.body.id);
 
   if (isNaN(id)) {
     throw new InvalidParameterErrorResponse("id", id);

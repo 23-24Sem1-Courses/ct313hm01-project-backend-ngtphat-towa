@@ -11,56 +11,38 @@ export interface CreateProductDTO {
   description?: string;
   categoryId: number;
 }
-
-// Define the Joi schema for CreateProductDTO
-export interface CreateProductDTO {
-  name: string;
-  imageUrl?: string;
-  price: number;
-  description?: string;
-  categoryId: number;
-}
-
-// Define the Joi schema for CreateProductDTO
+// Joi schema for CreateProductDTO
 export const createProductSchema = Joi.object({
   name: Joi.string().required().messages({
-    "string.empty": "Product name is required",
-    "string.base": "Product name must be a string",
+    "string.empty":
+      "It seems like the product name field is empty. Please provide a product name.",
+    "string.base":
+      "The product name should be a text string. Please check the input.",
+    "any.required":
+      "The product name is a required field. Don't forget to include it.",
   }),
   imageUrl: Joi.string().optional().uri().messages({
-    "string.uri": "Image URL must be a valid URL",
+    "string.uri":
+      "The image URL should be a valid URL. Please check the input.",
   }),
   price: Joi.number().required().messages({
-    "number.empty": "Product price is required",
-    "number.base": "Product price must be a number",
+    "number.empty":
+      "It seems like the product price field is empty. Please provide a product price.",
+    "number.base":
+      "The product price should be a numerical value. Please check the input.",
+    "any.required":
+      "The product price is a required field. Don't forget to include it.",
   }),
   description: Joi.string().optional().messages({
-    "string.base": "Description must be a string",
+    "string.base":
+      "The product description should be a text string. Please check the input.",
   }),
   categoryId: Joi.number().required().messages({
-    "number.empty": "Category ID is required",
-    "number.base": "Category ID must be a number",
+    "number.empty":
+      "It seems like the category ID field is empty. Please provide a category ID.",
+    "number.base":
+      "The category ID should be a numerical value. Please check the input.",
+    "any.required":
+      "The category ID is a required field. Don't forget to include it.",
   }),
 });
-
-export function parseBodyToCreateProductDTO(req: Request): CreateProductDTO {
-  return {
-    name: req.body.name,
-    imageUrl: req.body.imageUrl,
-    price: req.body.price,
-    description: req.body.description,
-    categoryId: req.body.categoryId,
-  };
-}
-
-export function mapCreateProductDTOToProduct(dto: CreateProductDTO): Product {
-  return {
-    name: dto.name,
-    imageUrl: dto.imageUrl,
-    price: dto.price,
-    description: dto.description,
-    category: { id: dto.categoryId },
-    wishListList: [],
-    carts: [],
-  };
-}

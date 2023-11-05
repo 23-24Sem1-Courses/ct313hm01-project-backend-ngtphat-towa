@@ -4,7 +4,6 @@ import { Request } from "express";
 
 // UpdateProductDTO for updating an existing product
 export interface UpdateProductDTO {
-  id: number;
   name?: string;
   imageUrl?: string;
   price?: number;
@@ -14,34 +13,30 @@ export interface UpdateProductDTO {
 
 // Joi schema for UpdateProductDTO
 export const updateProductSchema = Joi.object({
-  id: Joi.number().required(),
-  name: Joi.string(),
-  imageUrl: Joi.string().uri(),
-  price: Joi.number(),
-  description: Joi.string(),
-  categoryId: Joi.number(),
+  name: Joi.string().required().messages({
+    "string.empty":
+      "It seems like the product name field is empty. Please provide a product name.",
+    "string.base":
+      "The product name should be a text string. Please check the input.",
+  }),
+  imageUrl: Joi.string().optional().uri().messages({
+    "string.uri":
+      "The image URL should be a valid URL. Please check the input.",
+  }),
+  price: Joi.number().required().messages({
+    "number.empty":
+      "It seems like the product price field is empty. Please provide a product price.",
+    "number.base":
+      "The product price should be a numerical value. Please check the input.",
+  }),
+  description: Joi.string().optional().messages({
+    "string.base":
+      "The product description should be a text string. Please check the input.",
+  }),
+  categoryId: Joi.number().required().messages({
+    "number.empty":
+      "It seems like the category ID field is empty. Please provide a category ID.",
+    "number.base":
+      "The category ID should be a numerical value. Please check the input.",
+  }),
 });
-
-export function parseBodyToUpdateProductDTO(req: Request): UpdateProductDTO {
-  return {
-    id: req.body.id,
-    name: req.body.name,
-    imageUrl: req.body.imageUrl,
-    price: req.body.price,
-    description: req.body.description,
-    categoryId: req.body.categoryId,
-  };
-}
-
-export function mapUpdateProductDTOToProduct(dto: UpdateProductDTO): Product {
-  return {
-    id: dto.id,
-    name: dto.name,
-    imageUrl: dto.imageUrl,
-    price: dto.price,
-    description: dto.description,
-    category: dto.categoryId ? { id: dto.categoryId } : undefined,
-    wishListList: [],
-    carts: [],
-  };
-}
