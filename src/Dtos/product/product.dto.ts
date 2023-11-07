@@ -9,7 +9,7 @@ export interface ProductDTO {
   categoryId: number;
 }
 
-export const createProductSchema = Joi.object({
+export const getProductSchema = Joi.object({
   name: Joi.string().required().messages({
     "string.base": "The name should be a text string. Please check the input.",
     "string.empty":

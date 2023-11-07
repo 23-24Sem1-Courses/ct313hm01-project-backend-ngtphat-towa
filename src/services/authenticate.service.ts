@@ -127,7 +127,7 @@ export class AuthenticationService {
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
-          role: Role.user.valueOf(),
+          role: Number(Role.user),
           createdDate: user.createdDate,
         },
         config.server.token.secret,
@@ -158,7 +158,7 @@ export class AuthenticationService {
     }
   }
   /** Validate */
-  async validate(token: string): Promise<any> {
+  async validate(token: string): Promise<User | null> {
     try {
       // validate with jwt
       const authToken = this.tokenRepo.findByToken(token);

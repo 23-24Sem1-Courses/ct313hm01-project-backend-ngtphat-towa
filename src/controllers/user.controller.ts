@@ -9,6 +9,7 @@ import {
   ValidateTokenDTO,
   validateTokenSchema,
 } from "../Dtos/token/validate.dto";
+import { UnauthorizedAccessErrorResponse } from "../common/api.error";
 
 const authenticateService: AuthenticationService = new AuthenticationService();
 
@@ -28,9 +29,16 @@ const validateToken = async (
       validateTokenSchema
     );
 
-    const user = await authenticateService.validate(dto.token);
+    const grantedUser = await authenticateService.validate(dto.token);
 
-    req.body.user = user;
+    if (grantedUser === null) {
+      throw new UnauthorizedAccessErrorResponse();
+    }
+
+    req.body.user = {
+      ...grantedUser,
+    };
+    req.body.userId = grantedUser.id;
     next();
   } catch (error) {
     next(error);

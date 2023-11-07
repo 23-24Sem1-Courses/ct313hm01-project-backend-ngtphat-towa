@@ -1,9 +1,21 @@
 import express from "express";
 import controller from "../controllers/wishlist.controller";
 const WishlistRouter = express.Router();
+import userController from "../controllers/user.controller";
 
-WishlistRouter.route("/:token").get(controller.getWishList);
+WishlistRouter.route("/all").get(
+  userController.validateToken,
+  controller.getWishList
+);
 
-WishlistRouter.route("/add").post(controller.addWishList);
+WishlistRouter.route("/add").post(
+  userController.validateToken,
+  controller.addWishList
+);
+
+WishlistRouter.route("/remove").post(
+  userController.validateToken,
+  controller.removeWishlist
+);
 
 export default WishlistRouter;

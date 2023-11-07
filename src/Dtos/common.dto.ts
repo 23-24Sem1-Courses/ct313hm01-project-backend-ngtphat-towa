@@ -20,6 +20,20 @@ export function parseBodyToDTO<T>(req: Request, schema: Joi.ObjectSchema): T {
 
   return value as T;
 }
+
+export function parseUserToDTO<T>(req: Request, schema: Joi.ObjectSchema): T {
+  if (!req.body.user) {
+    throw new MissingRequiredParameterErrorResponse("Request body");
+  }
+
+  const { error, value } = schema.validate(req.body.user);
+
+  if (error) {
+    throw new JoiValidationError(error);
+  }
+
+  return value as T;
+}
 export function parseAuthenticationToDTO<T>(
   req: Request,
   schema: Joi.ObjectSchema

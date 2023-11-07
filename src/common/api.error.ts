@@ -31,8 +31,7 @@ export class JoiValidationError extends ApiError {
       error.message,
       error.details.map(
         (detail) =>
-          `
-          Invalid parameter ${detail.path.join(".")} value: ${detail.context
+          `Invalid parameter ${detail.path.join(".")} value: ${detail.context
             ?.value}`
       )
     );

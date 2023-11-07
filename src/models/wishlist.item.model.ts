@@ -1,7 +1,9 @@
 import { Product } from "./product.model";
 import { User } from "./user.model";
 
-export interface Wishlist {
+export interface WishlistItem {
+  id: number;
   user?: User;
-  products?: Product[];
+  createdDate?: Date;
+  product?: Product;
 }
