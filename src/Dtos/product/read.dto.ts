@@ -22,7 +22,7 @@ export const readProductSchema = Joi.object({
   category: Joi.object({
     id: Joi.number().required(),
     // Add other properties of Category here if needed
-  }).required(),
+  }).allow(null),
 });
 
 export function parseBodyToReadProductDTO(req: Request): ReadProductDTO {

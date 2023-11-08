@@ -1,8 +1,9 @@
 import Joi from "joi";
-import { CartItemDTO, cartItemSchema } from "./cartItem.dto";
+import { CartItemDTO, cartItemSchema } from "./cart.item.dto";
 
 export interface CartDTO {
   id?: number;
+  userId?: number;
   cartItems?: CartItemDTO[];
   totalCost: number;
   createdDate?: Date;

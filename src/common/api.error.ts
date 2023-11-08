@@ -92,7 +92,7 @@ export class MethodNotAllowedErrorResponse extends ApiError {
 }
 
 export class DatabaseErrorResponse extends ApiError {
-  constructor(error: Error) {
+  constructor(error?: Error) {
     super("DatabaseError", 500, "Database error", [], {
       error,
     });

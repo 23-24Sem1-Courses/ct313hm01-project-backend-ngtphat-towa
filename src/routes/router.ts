@@ -9,15 +9,15 @@ import CategoryRouter from "./category.router";
 
 const routers = express.Router();
 
-// routers.use("/product", ProductRouter);
+routers.use("/product", ProductRouter);
 
 routers.use("/category", CategoryRouter);
 
-// routers.use("/cart", CartRouter);
+routers.use("/cart", CartRouter);
 
-// routers.use("/user", UserRouter);
+routers.use("/user", UserRouter);
 
-// routers.use("/wishlist", WishlistRouter);
+routers.use("/wishlist", WishlistRouter);
 
 // routers.use("/order", OrderRouter);
 

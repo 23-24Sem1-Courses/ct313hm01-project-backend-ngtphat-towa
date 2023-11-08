@@ -1,7 +1,7 @@
 import Joi from "joi";
 import { Role } from "../../enums/role.enum";
 export interface UserDTO {
-  id?: number;
+  id: number;
   firstName?: string;
   lastName?: string;
   email?: string;

@@ -1,15 +1,15 @@
 import Joi from "joi";
 
-export interface AddToCartDTO {
+export interface AddCartItemDTO {
   id?: number;
   cartId?: number;
   userId: number;
   productId: number;
-  quanity: number;
+  quantity: number;
   createdDate?: Date;
 }
 
-export const addToCartSchema = Joi.object({
+export const addCartItemSchema = Joi.object({
   id: Joi.number().optional().messages({
     "number.base": "ID must be a number",
   }),
@@ -24,7 +24,7 @@ export const addToCartSchema = Joi.object({
     "any.required": "Product ID is required",
     "number.base": "Product ID must be a number",
   }),
-  quanity: Joi.number().required().min(1).messages({
+  quantity: Joi.number().required().min(1).messages({
     "any.required": "Quantity is required",
     "number.base": "Quantity must be a number",
     "number.min": "Quantity must be greater than or equal to 1",
