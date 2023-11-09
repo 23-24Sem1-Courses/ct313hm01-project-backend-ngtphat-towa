@@ -1,11 +1,11 @@
-export interface OrderItemsDTO {
+export interface OrderItemDTO {
   price: number;
   quantity: number;
   orderId: number;
   productId: number;
 }
 
-export function validateOrderItemsDto(orderItemsDto: OrderItemsDTO): void {
+export function validateOrderItemsDto(orderItemsDto: OrderItemDTO): void {
   if (!orderItemsDto.price) {
     throw new Error("The price property is required.");
   }
