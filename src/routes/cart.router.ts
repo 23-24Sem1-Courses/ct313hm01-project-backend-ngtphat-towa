@@ -24,4 +24,10 @@ CartRouter.route("/").delete(
   controller.removeCartItem
 );
 
+/** /delete/{cartItemId} */
+CartRouter.route("/all").delete(
+  userController.validateToken,
+  controller.removeCart
+);
+
 export default CartRouter;

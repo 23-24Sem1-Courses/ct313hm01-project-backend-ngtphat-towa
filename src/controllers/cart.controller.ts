@@ -1,9 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import CartRepository from "../repositories/cart.repository";
-import Logging from "../common/Logging";
 import { parseBodyToDTO, parseUserToDTO } from "../Dtos/common.dto";
 import { UserDTO, userSchema } from "../Dtos/user/user.dto";
-import { UpdateUserDTO } from "../Dtos/user/update.dto";
 import {
   UpdateCartItemDTO,
   updateCartItemSchema,
@@ -17,8 +15,10 @@ import {
   RemoveItemCartDTO,
   removeCartItemSchema,
 } from "../Dtos/cart/remove.item.dto";
+import CartService from "../services/cart.service";
+import cartService from "../services/cart.service";
 
-const cartRepository = CartRepository;
+const cartRepository = CartService;
 /** /add */
 const addToCart = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -27,16 +27,6 @@ const addToCart = async (req: Request, res: Response, next: NextFunction) => {
       req,
       addCartItemSchema
     );
-
-    // Check if the new cart exist, otherwise create new one
-    var existingCart = await cartRepository.getCartById(
-      addToCartItemDTO.userId
-    );
-    if (existingCart === null || existingCart?.id) {
-      existingCart = await cartRepository.create(addToCartItemDTO.userId);
-    }
-    // Assign current cart id to dto
-    addToCartItemDTO.cartId = existingCart!.id;
     const data = await cartRepository.addToCart(addToCartItemDTO);
 
     // Return current data
@@ -56,14 +46,7 @@ const updateCartItem = async (
       req,
       updateCartItemSchema
     );
-
-    let cartDTO = await cartRepository.getCartById(updateCartItemDTO.userId);
-
-    if (cartDTO === null) {
-      cartDTO = await cartRepository.create(updateCartItemDTO.userId);
-    }
-    updateCartItemDTO.cartId = cartDTO!.id;
-    const data = await cartRepository.updateToCart(updateCartItemDTO);
+    const data = await cartService.updateCartItem(updateCartItemDTO);
 
     return res.status(200).json(data);
   } catch (error) {
@@ -80,14 +63,7 @@ const getCartItems = async (
   try {
     const userDTO = parseUserToDTO<UserDTO>(req, userSchema);
 
-    // Check the new cart exist:
-    const currentCart = await cartRepository.getCartById(userDTO.id);
-    if (currentCart === null) {
-      throw new ResourceNotFoundErrorResponse("current cart");
-    }
-
-    // Fetch CartItem
-    const data = await cartRepository.getCartItem(currentCart);
+    const data = await cartService.getCartItems(userDTO);
 
     return res.status(200).json(data);
   } catch (error) {
@@ -106,13 +82,21 @@ const removeCartItem = async (
       req,
       removeCartItemSchema
     );
-    const cart = await cartRepository.getCartById(removeCartItemDTO.userId);
-    if (cart === null) {
-      throw new ResourceNotFoundErrorResponse();
-    }
 
-    removeCartItemDTO.cartId = cart.id;
-    const data = await cartRepository.removeCartItem(removeCartItemDTO);
+    const data = await cartService.removeCartItem(removeCartItemDTO);
+
+    return res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
+};
+
+/** /delete/{cartItemId} */
+const removeCart = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userDTO = parseUserToDTO<UserDTO>(req, userSchema);
+
+    const data = await cartService.removeCart(userDTO);
 
     return res.status(200).json(data);
   } catch (error) {
@@ -125,4 +109,5 @@ export default {
   getCartItems,
   updateCartItem,
   removeCartItem,
+  removeCart,
 };

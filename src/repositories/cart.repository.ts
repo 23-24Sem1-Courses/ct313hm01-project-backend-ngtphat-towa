@@ -15,6 +15,7 @@ import { CartItemDTO } from "../Dtos/cart/cart.item.dto";
 import { RemoveItemCartDTO } from "../Dtos/cart/remove.item.dto";
 import { RemoveCartDTO } from "../Dtos/cart/remove.dto";
 import Logging from "../common/Logging";
+import ApiError, { ResourceNotFoundErrorResponse } from "../common/api.error";
 
 class CartRepository {
   private db = knex(config.knex);
@@ -22,86 +23,162 @@ class CartRepository {
   constructor() {}
 
   async create(userId: number): Promise<CartDTO | null> {
-    const result = await this.db.raw("CALL CreateCart(?)", [userId]);
-    const cartDTO: CartDTO = result[0][0][0];
-    return cartDTO;
+    // Insert a new row into the Cart table
+    const [v_cartId] = await this.db<CartDTO>("carts")
+      .insert({ userId: userId })
+      .returning("id");
+
+    // Return the newly created row
+    const cart = await this.db<CartDTO>("carts").where("id", v_cartId).first();
+    if (!cart) {
+      return null;
+    }
+
+    return cart;
   }
 
-  async addToCart(addToCart: AddCartItemDTO): Promise<CartDTO | null> {
-    const result = await this.db.raw("CALL AddToCart(?,?,?,?)", [
-      addToCart.cartId,
+  async addToCart(addToCart: AddCartItemDTO) {
+    // Retrieve the price of the product from the Product table
+    const product = await this.db<ProductDTO>("products")
+      .where("id", addToCart.productId)
+      .first();
+    const v_price: number = product?.price!;
+
+    // Calculate the total cost of the added item
+    const v_totalCost = addToCart.quantity * v_price;
+
+    // Insert a new row into the CartItem table
+    await this.db<CartItemDTO>("cart_items").insert({
+      cartId: addToCart.cartId,
+      productId: addToCart.productId,
+      quantity: addToCart.quantity,
+      price: v_price,
+    });
+
+    // Call the UpdateTotalCost function to update the TotalCost in the Cart table
+    return await this.updateTotalCost(
+      addToCart.cartId!,
       addToCart.userId,
-      addToCart.productId,
-      addToCart.quantity,
-    ]);
-
-    const cartDTO: CartDTO = JSON.parse(JSON.stringify(result[0][0][0]));
-
-    return cartDTO;
+      v_totalCost
+    );
   }
   async updateToCart(updateToCart: UpdateCartItemDTO): Promise<CartDTO | null> {
-    const result = await this.db.raw("CALL UpdateCartItemQuantity(?,?,?,?)", [
-      updateToCart.userId,
-      updateToCart.cartId,
-      updateToCart.productId,
-      updateToCart.quantity,
-    ]);
-    const cartDTO: CartDTO = result[0][0][0];
+    // Retrieve the old quantity and price of the cart item from the CartItem table
+    const cartItem = await this.db<CartItemDTO>("cart_items")
+      .where({ cartId: updateToCart.cartId, productId: updateToCart.productId })
+      .first();
+    if (!cartItem) {
+      throw new ResourceNotFoundErrorResponse();
+    }
+    const v_oldQuantity = cartItem?.quantity!;
+    const v_price = cartItem?.price!;
 
-    return cartDTO;
+    // Calculate the difference in total cost
+    const v_totalCostDifference =
+      (updateToCart.quantity - v_oldQuantity) * v_price;
+
+    // Update the quantity in the CartItem table
+    await this.db<CartItemDTO>("cart_items")
+      .where({ cartId: updateToCart.cartId, productId: updateToCart.productId })
+      .update({ quantity: updateToCart.quantity });
+
+    // Call the UpdateTotalCost function to update the TotalCost in the Cart table
+    return await this.updateTotalCost(
+      updateToCart.cartId!,
+      updateToCart.userId,
+      v_totalCostDifference
+    );
   }
   async removeCartItem(
     removeCartItem: RemoveItemCartDTO
   ): Promise<CartDTO | null> {
-    const result = await this.db.raw("CALL RemoveCartItem(?,?,?)", [
-      removeCartItem.userId,
-      removeCartItem.cartId,
-      removeCartItem.productId,
-    ]);
-    const cartDTO: CartDTO = result[0][0][0];
+    // Retrieve the quantity and price of the cart item from the CartItem table
+    const cartItem = await this.db<CartItemDTO>("cart_items")
+      .where({
+        cartId: removeCartItem.cartId,
+        productId: removeCartItem.productId,
+      })
+      .first();
+    if (!cartItem) {
+      throw new ResourceNotFoundErrorResponse();
+    }
+    const v_quantity = cartItem.quantity!;
+    const v_price = cartItem.price!;
 
-    return cartDTO;
+    // Calculate the total cost of the removed item
+    const v_totalCostDifference = v_quantity * v_price;
+    Logging.error(v_price + "*" + v_quantity + "=" + v_totalCostDifference);
+
+    // Remove the item from the CartItem table
+    await this.db<CartItemDTO>("cart_items")
+      .where({
+        cartId: removeCartItem.cartId,
+        productId: removeCartItem.productId,
+      })
+      .del();
+
+    // Call the UpdateTotalCost function to update the TotalCost in the Cart table
+    return await this.updateTotalCost(
+      removeCartItem.cartId!,
+      removeCartItem.userId,
+      -v_totalCostDifference
+    );
   }
-  async removeCart(userId: number) {
-    const result = await this.db.raw<CartDTO>("CALL RemoveCart(?)", [userId]);
-    return result;
+  async removeCart(userId: number, cartId: number): Promise<void> {
+    await this.db("carts").where("id", cartId).del();
+  }
+  async getCartItemById(cartId: number, productId: number) {
+    const cartItem = await this.db<CartItemDTO>("cart_items")
+      .where({
+        cartId: cartId,
+        productId: productId,
+      })
+      .first();
+    return cartItem || null;
   }
   async getCartItem(cartDTO: CartDTO) {
-    var result = await this.db.raw("CALL GetCartItems(?)", [cartDTO.id]);
-    const cartItemsDtos: CartItemDTO[] = result[0][0];
-    cartDTO.cartItems = cartItemsDtos;
-
+    const cartItems: CartItemDTO[] = await this.db<CartItemDTO>(
+      "cart_items as ci"
+    )
+      .join("products as p", "ci.productId", "p.id")
+      .select(
+        "ci.id",
+        "ci.cartId",
+        "ci.quantity",
+        "ci.productId",
+        "ci.price",
+        "p.description",
+        "p.imageURL",
+        "p.name",
+        "ci.createdDate"
+      )
+      .where("ci.cartId", cartDTO.id);
+    cartDTO.cartItems = cartItems;
     return cartDTO;
   }
   async getCartById(userId: number) {
-    // Get Cart
-    let result = await this.db.raw("CALL GetCart(?)", [userId]);
-    const data = result[0][0];
-    Logging.info(result)
-    Logging.info(data);
-    if (result && data.id) {
-      const cartDto: CartDTO = {
-        id: data.id,
-        totalCost: data.totalCost,
-        userId: data.userId,
-        createdDate: data.createdDate,
-      };
+    const cart = await this.db<CartDTO>("carts")
+      .where("userId", userId)
+      .orderBy("id", "desc")
+      .first();
 
-      return cartDto;
-    }
-    return null;
+    return cart || null;
   }
-  // async getCartItemById(
-  //   cartId: number,
-  //   productId: number
-  // ): Promise<CartDTO | null> {
-  //   // Get Cart
-  //   // let result = await this.db.raw("CALL GetCart(?)", [userId]);
+  private async updateTotalCost(
+    p_cartId: number,
+    p_userId: number,
+    p_totalCost: number
+  ) {
+    // Update the TotalCost in the Cart table
+    await this.db<CartDTO>("carts")
+      .where({ id: p_cartId, userId: p_userId })
+      .increment("totalCost", p_totalCost);
 
-  //   // const cartDTO: CartItemDTO = result[0][0][0];
+    // Return the updated Cart
+    const cart = await this.db<CartDTO>("carts").where("id", p_cartId).first();
 
-  //   // return cartDTO;
-  // }
+    return cart || null;
+  }
 }
 
 export default new CartRepository();
