@@ -38,7 +38,7 @@ const SERVER = {
 /**
  * @type { Object.<string, import("knex").Knex.Config> }
  */
-export const KNEX: Knex.Config = {
+const KNEX: Knex.Config = {
   client: "mysql",
   connection: {
     host: MYSQL.host,
@@ -48,11 +48,21 @@ export const KNEX: Knex.Config = {
     database: MYSQL.database,
   },
 };
+const STRIPE = {
+  public: process.env.STRIPE_PUBLIC_KEY,
+  secret: process.env.STRIPE_SECRET_KEY,
+};
+
+const CLIENT = {
+  baseUrl: process.env.BASE_URL,
+};
 
 const config = {
   db: MYSQL,
   server: SERVER,
   knex: KNEX,
+  payment: STRIPE,
+  client: CLIENT,
 };
 
 export default config;

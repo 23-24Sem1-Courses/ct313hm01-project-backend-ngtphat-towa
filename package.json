@@ -19,7 +19,8 @@
     "joi": "^17.11.0",
     "jsonwebtoken": "^9.0.2",
     "knex": "^3.0.1",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "stripe": "^14.3.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.5",
