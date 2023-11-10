@@ -49,12 +49,12 @@ const KNEX: Knex.Config = {
   },
 };
 const STRIPE = {
-  public: process.env.STRIPE_PUBLIC_KEY,
-  secret: process.env.STRIPE_SECRET_KEY,
+  public: process.env.STRIPE_PUBLIC_KEY || "",
+  secret: process.env.STRIPE_SECRET_KEY || "",
 };
 
 const CLIENT = {
-  baseUrl: process.env.BASE_URL,
+  baseUrl: process.env.BASE_URL || "",
 };
 
 const config = {
