@@ -8,7 +8,7 @@ export interface CheckoutItemDTO {
   userId: number;
 }
 
-export const CheckoutItemSchema = Joi.object({
+export const checkoutItemSchema = Joi.object({
   productName: Joi.string().required().messages({
     "string.empty": "Product name cannot be empty",
     "any.required": "Product name is a required field",
@@ -36,4 +36,4 @@ export const CheckoutItemSchema = Joi.object({
     "number.min": "User ID must be at least 1",
     "any.required": "User ID is a required field",
   }),
-});
+}).options({ stripUnknown: true });

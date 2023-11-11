@@ -1,8 +1,10 @@
 export interface OrderItemDTO {
+  id?: number;
   price: number;
   quantity: number;
   orderId: number;
   productId: number;
+  createdDate?: Date;
 }
 
 import Joi from "joi";

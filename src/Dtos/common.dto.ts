@@ -51,3 +51,27 @@ export function parseAuthenticationToDTO<T>(
 
   return value as T;
 }
+
+export function parseBodyToDTOs<T>(
+  req: Request,
+  schema: Joi.ObjectSchema
+): T[] {
+  if (!req.body) {
+    throw new MissingRequiredParameterErrorResponse("Request body");
+  }
+
+  // Ensure req.body is an array
+  if (!Array.isArray(req.body)) {
+    throw new TypeError("Request body must be an array");
+  }
+
+  return req.body.map((item) => {
+    const { error, value } = schema.validate(item);
+
+    if (error) {
+      throw new JoiValidationError(error);
+    }
+
+    return value as T;
+  });
+}

@@ -1,7 +1,12 @@
 import Joi from "joi";
+import { OrderItemDTO } from "./order.item.dto";
 
 export interface OrderDTO {
   id?: number;
+  createdDate: Date;
+  totalPrice: number;
+  sessionId: string;
+  orderItems?: OrderItemDTO[];
   userId: number;
 }
 
