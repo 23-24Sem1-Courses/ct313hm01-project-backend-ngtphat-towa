@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import CartRepository from "../repositories/cart.repository";
 import { parseBodyToDTO, parseUserToDTO } from "../Dtos/common.dto";
 import { UserDTO, userSchema } from "../Dtos/user/user.dto";
 import {
@@ -7,18 +6,14 @@ import {
   updateCartItemSchema,
 } from "../Dtos/cart/update.item.dto";
 import { AddCartItemDTO, addCartItemSchema } from "../Dtos/cart/add.item.dto";
-import {
-  DatabaseErrorResponse,
-  ResourceNotFoundErrorResponse,
-} from "../common/api.error";
+
 import {
   RemoveItemCartDTO,
   removeCartItemSchema,
 } from "../Dtos/cart/remove.item.dto";
 import CartService from "../services/cart.service";
-import cartService from "../services/cart.service";
 
-const cartRepository = CartService;
+const cartService = CartService;
 /** /add */
 const addToCart = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -27,7 +22,7 @@ const addToCart = async (req: Request, res: Response, next: NextFunction) => {
       req,
       addCartItemSchema
     );
-    const data = await cartRepository.addToCart(addToCartItemDTO);
+    const data = await cartService.addToCart(addToCartItemDTO);
 
     // Return current data
     return res.status(200).json(data);

@@ -8,6 +8,7 @@ import Routers from "../src/routes/router";
 
 import {
   handleError,
+  handleStripeError,
   methodNotAllowed,
   resourceNotFound,
 } from "./controllers/errors.controller";
@@ -69,6 +70,9 @@ const StartServer = () => {
   router.use("/api", Routers);
 
   /** Error Handling */
+  //  Payment
+  router.use(handleStripeError);
+
   // Apply the "Method Not Allowed" middleware
   router.use(methodNotAllowed);
 

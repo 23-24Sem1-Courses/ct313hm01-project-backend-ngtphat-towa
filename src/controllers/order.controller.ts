@@ -1,22 +1,83 @@
 import { NextFunction, Request, Response } from "express";
+import {
+  parseBodyToDTO,
+  parseBodyToDTOs,
+  parseUserToDTO,
+} from "../Dtos/common.dto";
+import {
+  CheckoutItemDTO,
+  checkoutItemSchema,
+} from "../Dtos/checkout/checkout.item.dto";
+import orderService from "../services/order.service";
+import { UserDTO, userSchema } from "../Dtos/user/user.dto";
+import { SessionDTO, sessionSchema } from "../Dtos/checkout/session.dto";
+import { User } from "../models/user.model";
 
 /** /create-checkout-session */
-const checkoutList = (req: Request, res: Response, next: NextFunction) => {
-  return res.status(200).json({ message: "checkoutList" });
+const checkoutList = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Retrive check out item list
+    const checkOutItemList = parseBodyToDTOs<CheckoutItemDTO>(
+      req,
+      checkoutItemSchema
+    );
+    // Create sesstion by call services
+    const session = await orderService.createSession(checkOutItemList);
+    // Create json response
+    const stripeResponse = {
+      sessionId: session.id,
+    };
+
+    return res.status(200).json(stripeResponse);
+  } catch (error) {
+    next(error);
+  }
 };
 
 /** /add */
-const placeOrder = (req: Request, res: Response, next: NextFunction) => {
-  return res.status(200).json({ message: "placeOrder" });
+const placeOrder = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    // retrive uesr from authentication
+    const userDTO = parseUserToDTO<UserDTO>(req, userSchema);
+    const sessionDTO = parseBodyToDTO<SessionDTO>(req, sessionSchema);
+
+    await orderService.placeOrder(userDTO, sessionDTO);
+
+    return res.status(201).json({
+      userDTO,
+      sessionDTO,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 /**  get all orders */
-const getAllOrders = (req: Request, res: Response, next: NextFunction) => {
-  return res.status(200).json({ message: "getAllOrders" });
+const getAllOrders = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Retrive and validate
+    const userDTO = parseUserToDTO<UserDTO>(req, userSchema);
+
+    const data = await orderService.listOrders(userDTO);
+
+    return res.status(200).json(data);
+  } catch (error) {}
 };
 
 /** get orderitems for an order */
-const getOrderById = (req: Request, res: Response, next: NextFunction) => {
+const getOrderById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   return res.status(200).json({ message: "getOrderById" });
 };
 

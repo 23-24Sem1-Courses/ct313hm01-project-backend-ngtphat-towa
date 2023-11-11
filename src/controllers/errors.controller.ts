@@ -4,7 +4,6 @@ import ApiError, {
   ResourceNotFoundErrorResponse,
 } from "../common/api.error";
 import { Request, Response, NextFunction } from "express";
-
 function methodNotAllowed(req: Request, res: Response, next: NextFunction) {
   if (req.route) {
     const httpMethods = Object.keys(req.route.methods)
@@ -58,4 +57,38 @@ function handleApiError(error: ApiError, res: Response) {
   }
 }
 
-export { methodNotAllowed, resourceNotFound, handleError };
+function handleStripeError(
+  err: any,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  switch (err.type) {
+    case "StripeCardError":
+      next(new ApiError("StripeCardError", 400, err.message));
+      break;
+    case "StripeInvalidRequestError":
+      next(
+        new ApiError(
+          "StripeInvalidRequestError",
+          400,
+          "An invalid request occurred."
+        )
+      );
+      break;
+    case "StripeError":
+      next(
+        new ApiError(
+          "StripeError",
+          500,
+          "Another problem occurred, maybe unrelated to Stripe."
+        )
+      );
+      break;
+    default:
+      next(err);
+      break;
+  }
+}
+
+export { methodNotAllowed, resourceNotFound, handleStripeError, handleError };
