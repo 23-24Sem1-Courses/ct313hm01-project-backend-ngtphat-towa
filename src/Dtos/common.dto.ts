@@ -11,7 +11,6 @@ export function parseBodyToDTO<T>(req: Request, schema: Joi.ObjectSchema): T {
   if (!req.body) {
     throw new MissingRequiredParameterErrorResponse("Request body");
   }
-
   const { error, value } = schema.validate(req.body);
 
   if (error) {
@@ -74,4 +73,16 @@ export function parseBodyToDTOs<T>(
 
     return value as T;
   });
+}
+export function parseParamsToDTO<T>(req: Request, schema: Joi.ObjectSchema): T {
+  if (!req.params) {
+    throw new MissingRequiredParameterErrorResponse("Request parameters");
+  }
+  const { error, value } = schema.validate(req.params);
+
+  if (error) {
+    throw new JoiValidationError(error);
+  }
+
+  return value as T;
 }
