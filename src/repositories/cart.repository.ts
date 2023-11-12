@@ -107,7 +107,6 @@ class CartRepository {
 
     // Calculate the total cost of the removed item
     const v_totalCostDifference = v_quantity * v_price;
-    Logging.error(v_price + "*" + v_quantity + "=" + v_totalCostDifference);
 
     // Remove the item from the CartItem table
     await this.db<CartItemDTO>("cart_items")
