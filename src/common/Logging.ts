@@ -8,11 +8,13 @@ export default class Logging {
       typeof args === "string" ? chalk.blueBright(args) : args
     );
   public static info_data = (msg: any, args: any) => {
-    console.log(
-      chalk.yellow(`[${new Date().toLocaleString()}] [INFO]`),
-      typeof msg === "string" ? chalk.yellowBright(msg) : msg
-    );
-    console.info(args);
+    if (Object.keys(args).length !== 0) {
+      console.log(
+        chalk.yellow(`[${new Date().toLocaleString()}] [INFO]`),
+        typeof msg === "string" ? chalk.yellowBright(msg) : msg
+      );
+      console.info(args);
+    }
   };
 
   public static warning = (args: any) =>

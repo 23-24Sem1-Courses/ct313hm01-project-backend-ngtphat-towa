@@ -1,5 +1,9 @@
 import { NextFunction, Request, Response, response } from "express";
-import { parseAuthenticationToDTO, parseBodyToDTO } from "../Dtos/common.dto";
+import {
+  parseAuthenticationToDTO,
+  parseBodyToDTO,
+  parseUserToDTO,
+} from "../Dtos/common.dto";
 import { LogInDTO, loginSchema } from "../Dtos/user/login.dto";
 import { RegisterDTO, registerSchema } from "../Dtos/user/register.dto";
 import { AuthenticationService } from "../services/authenticate.service";
@@ -10,6 +14,8 @@ import {
   validateTokenSchema,
 } from "../Dtos/token/validate.dto";
 import { UnauthorizedAccessErrorResponse } from "../common/api.error";
+import { UserDTO, userSchema } from "../Dtos/user/user.dto";
+import { Role } from "../enums/role.enum";
 
 const authenticateService: AuthenticationService = new AuthenticationService();
 
@@ -40,6 +46,23 @@ const validateToken = async (
     };
     req.body.userId = grantedUser.id;
     next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+const validateAdminRole = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const uesrDTO = parseUserToDTO<UserDTO>(req, userSchema);
+    const userRole = uesrDTO.role;
+    if (userRole && userRole === Role.admin) {
+      next();
+    }
+    throw new UnauthorizedAccessErrorResponse();
   } catch (error) {
     next(error);
   }
@@ -82,6 +105,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
 
 export default {
   findAllUsers,
+  validateAdminRole,
   validateToken,
   register,
   login,
