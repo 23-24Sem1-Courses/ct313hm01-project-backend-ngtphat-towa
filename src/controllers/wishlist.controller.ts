@@ -26,7 +26,7 @@ const getAll = async (req: Request, res: Response, next: NextFunction) => {
     /// get all wishlist
     const model = await service.getAll(user);
 
-    return res.status(200).json(model);
+    return res.status(200).json(model?.products ?? []);
   } catch (error) {
     next(error);
   }

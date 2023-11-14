@@ -10,7 +10,10 @@ CartRouter.route("/").get(
 );
 
 /** /add */
-CartRouter.route("/").post(userController.validateToken, controller.addToCart);
+CartRouter.route("/add").post(
+  userController.validateToken,
+  controller.addToCart
+);
 
 /** /update/{cartItemId} */
 CartRouter.route("/:id").put(
