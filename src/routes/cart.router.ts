@@ -4,7 +4,7 @@ import userController from "../controllers/user.controller";
 const CartRouter = express.Router();
 
 /** get all cart */
-CartRouter.route("/").get(
+CartRouter.route("/all").get(
   userController.validateToken,
   controller.getCartItems
 );
@@ -22,7 +22,7 @@ CartRouter.route("/:id").put(
 );
 
 /** /delete/{cartItemId} */
-CartRouter.route("/").delete(
+CartRouter.route("/remove").delete(
   userController.validateToken,
   controller.removeCartItem
 );

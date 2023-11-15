@@ -6,14 +6,14 @@ dotenv.config();
 const DB_HOST = process.env.DB_HOST || "localhost";
 const DB_DATABASE = process.env.DB_DATABASE || "ecommercedb";
 const DB_USERNAME = process.env.DB_USERNAME || "root";
-const DB_PASSWORD = process.env.DB_PASSWORD || "root";
+const DB_PASSWORD = process.env.DB_PASSWORD || "";
 const DB_PORT = process.env.DB_PORT ? Number(process.env.DB_PORT) : 3306;
+// const DB_PORT = process.env.DB_PORT ? Number(process.env.DB_PORT) : 3307;
 
 const MYSQL = {
   host: DB_HOST,
   port: DB_PORT,
   database: DB_DATABASE,
-
   user: DB_USERNAME,
   password: DB_PASSWORD,
 };
