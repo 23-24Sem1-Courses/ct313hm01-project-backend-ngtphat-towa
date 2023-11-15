@@ -16,7 +16,7 @@ CartRouter.route("/add").post(
 );
 
 /** /update/{cartItemId} */
-CartRouter.route("/:id").put(
+CartRouter.route("/update-quantity").put(
   userController.validateToken,
   controller.updateCartItem
 );
