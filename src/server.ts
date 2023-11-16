@@ -17,6 +17,7 @@ import {
 const router = express();
 const db = Knex(config.knex);
 const PORT = config.server.port;
+// const PORT = 3307;
 
 /** Middlewares **/
 /* Express  */
