@@ -4,7 +4,10 @@ import userController from "../controllers/user.controller";
 const OrderRouter = express.Router();
 
 /** create-checkout-session */
-OrderRouter.route("/create-checkout-session").post(controller.checkoutList);
+OrderRouter.route("/create-checkout-session").post(
+  userController.validateToken,
+  controller.checkoutList
+);
 
 /** place order */
 OrderRouter.route("/place-order").post(

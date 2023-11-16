@@ -12,6 +12,8 @@ import orderService from "../services/order.service";
 import { UserDTO, userSchema } from "../Dtos/user/user.dto";
 import { SessionDTO, sessionSchema } from "../Dtos/checkout/session.dto";
 import { User } from "../models/user.model";
+import { bool } from "joi";
+import Logging from "../common/Logging";
 
 /** /create-checkout-session */
 const checkoutList = async (
@@ -21,10 +23,16 @@ const checkoutList = async (
 ) => {
   try {
     // Retrive check out item list
+    const userDTO = parseUserToDTO<UserDTO>(req, userSchema);
     const checkOutItemList = parseBodyToDTOs<CheckoutItemDTO>(
       req,
       checkoutItemSchema
     );
+    Logging.info_data("check-out-item", userDTO);
+    // add user id into each checkout items
+    for (const item of checkOutItemList) {
+      item.userId = userDTO.id;
+    }
     // Create sesstion by call services
     const session = await orderService.createSession(checkOutItemList);
     // Create json response
