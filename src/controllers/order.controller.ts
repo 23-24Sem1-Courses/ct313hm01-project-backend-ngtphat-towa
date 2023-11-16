@@ -77,7 +77,9 @@ const getAllOrders = async (
     const data = await orderService.listOrders(userDTO);
 
     return res.status(200).json(data);
-  } catch (error) {}
+  } catch (error) {
+    next(error);
+  }
 };
 
 /** get orderitems for an order */
@@ -86,7 +88,16 @@ const getOrderById = async (
   res: Response,
   next: NextFunction
 ) => {
-  return res.status(200).json({ message: "getOrderById" });
+  try {
+    const id = Number(req.params.id);
+    const userDTO = parseUserToDTO<UserDTO>(req, userSchema);
+
+    const data = await orderService.getOrder(id, userDTO.id);
+
+    return res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
 };
 
 export default {

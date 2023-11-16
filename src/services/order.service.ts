@@ -30,8 +30,8 @@ class OrderService {
 
   constructor() {}
 
-  async getOrder(id: number) {
-    const order = await this.orderRepository.getById(id);
+  async getOrder(id: number, userId: number) {
+    const order = await this.orderRepository.getById(id, userId);
     if (order === null) {
       throw new ResourceNotFoundErrorResponse();
     }

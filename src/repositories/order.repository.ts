@@ -2,6 +2,7 @@ import { knex } from "knex";
 import config from "../config/config";
 import { Order } from "../models/order.model";
 import { OrderDTO } from "../Dtos/order/order.dto";
+import Logging from "../common/Logging";
 
 class OrderRepository {
   private db = knex(config.knex);
@@ -15,8 +16,12 @@ class OrderRepository {
       .select("*");
   }
 
-  async getById(id: number): Promise<OrderDTO | null> {
-    return await this.db(this.table).where({ id: id }).first();
+  async getById(id: number, userId: number): Promise<OrderDTO | null> {
+    const data = await this.db(this.table)
+      .where({ id: id, userId: userId })
+      .first();
+
+    return data || null;
   }
   async search(searchCriteria: Partial<Order>): Promise<Order[]> {
     let query = this.db(this.table);
@@ -25,7 +30,7 @@ class OrderRepository {
       query = query.orWhere(key as string, "like", `%${value}%`);
     }
 
-    return await query.select("*");
+    return (await query.select("*")) || null;
   }
 
   async create(item: OrderDTO): Promise<Order | null> {
@@ -35,12 +40,12 @@ class OrderRepository {
   }
 
   async read(id: number): Promise<Order | null> {
-    return await this.db(this.table).where({ id }).first();
+    return (await this.db(this.table).where({ id }).first()) || null;
   }
 
-  async update(id: number, item: Order): Promise<Order> {
+  async update(id: number, item: Order): Promise<Order | null> {
     await this.db(this.table).where({ id: id }).update(item);
-    return await this.db(this.table).where({ id: id }).first();
+    return (await this.db(this.table).where({ id: id }).first()) || null;
   }
 
   async delete(id: number): Promise<void> {
