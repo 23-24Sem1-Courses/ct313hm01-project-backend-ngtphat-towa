@@ -16,6 +16,7 @@ import {
 import { UnauthorizedAccessErrorResponse } from "../common/api.error";
 import { UserDTO, userSchema } from "../Dtos/user/user.dto";
 import { Role } from "../enums/role.enum";
+import Logging from "../common/Logging";
 
 const authenticateService: AuthenticationService = new AuthenticationService();
 
@@ -40,7 +41,6 @@ const validateToken = async (
     if (grantedUser === null) {
       throw new UnauthorizedAccessErrorResponse();
     }
-
     req.body.user = {
       ...grantedUser,
     };
@@ -59,15 +59,30 @@ const validateAdminRole = async (
   try {
     const uesrDTO = parseUserToDTO<UserDTO>(req, userSchema);
     const userRole = uesrDTO.role;
-    if (userRole && userRole === Role.admin) {
-      next();
+    Logging.debug("validateAdminRole:", uesrDTO);
+
+    if (userRole && userRole !== Role.admin) {
+      throw new UnauthorizedAccessErrorResponse();
     }
-    throw new UnauthorizedAccessErrorResponse();
+    next();
   } catch (error) {
     next(error);
   }
 };
+const checkUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const uesrDTO = parseUserToDTO<UserDTO>(req, userSchema);
+    const userRole = uesrDTO.role;
+    Logging.debug("checkUser:", uesrDTO);
 
+    if (!(userRole && userRole === Role.admin)) {
+      delete uesrDTO.role;
+    }
+    return res.status(200).json(uesrDTO);
+  } catch (error) {
+    next(error);
+  }
+};
 const register = async (req: Request, res: Response, next: NextFunction) => {
   try {
     /// Retrive and validate
@@ -110,4 +125,5 @@ export default {
   register,
   login,
   logout,
+  checkUser,
 };

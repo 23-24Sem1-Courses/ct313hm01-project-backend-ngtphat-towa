@@ -13,8 +13,8 @@ import {
   CreateCategoryDTO,
   createCategorySchema,
 } from "../Dtos/category/create.dto";
-import { updateProductSchema } from "../Dtos/product/update.dto";
-import { UpdateCategoryDTO } from "../Dtos/category/update.dto";
+
+import { UpdateCategoryDTO, updateCategorySchema } from "../Dtos/category/update.dto";
 
 const service = CategoryService;
 const resourceName = "category";
@@ -61,7 +61,7 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
   try {
     /// Retrive
     const id = validateIdDTO(req);
-    const dto = parseBodyToDTO<UpdateCategoryDTO>(req, updateProductSchema);
+    const dto = parseBodyToDTO<UpdateCategoryDTO>(req, updateCategorySchema);
 
     await validateExisting(id);
 

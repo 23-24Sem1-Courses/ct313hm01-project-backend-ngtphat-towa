@@ -9,7 +9,7 @@ export interface UpdateCategoryDTO {
   imageUrl?: string;
 }
 
-const updateCategorySchema = Joi.object({
+export const updateCategorySchema = Joi.object({
   name: Joi.string().required().messages({
     "string.base": "name must be a string",
     "string.empty": "name cannot be an empty field",
@@ -24,4 +24,4 @@ const updateCategorySchema = Joi.object({
     "string.base": "imageUrl must be a string",
     "string.uri": "imageUrl must be a valid URI",
   }),
-});
+}).options({ stripUnknown: true });

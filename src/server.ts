@@ -45,8 +45,8 @@ const StartServer = () => {
       `Incomming - METHOD: [${req.method}] - URL: [${req.url}] - IP: [${req.socket.remoteAddress}]`
     );
     // Log the request body and parameters
-    Logging.info_data("Request Body:", req.body);
-    Logging.info_data("Request Parameters:", req.params);
+    Logging.debug("Request Body:", req.body);
+    Logging.debug("Request Parameters:", req.params);
     res.on("finish", () => {
       /** Log the res */
       Logging.info(
