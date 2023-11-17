@@ -13,7 +13,10 @@ import {
   ResourceNotFoundErrorResponse,
 } from "../common/api.error";
 import productService from "../services/product.service";
-import { RemoveWilistItemDTO } from "../Dtos/wishlist/remove.dto";
+import {
+  RemoveWilistItemDTO,
+  removeWilistItemSchema,
+} from "../Dtos/wishlist/remove.dto";
 
 const service = WishlistService;
 
@@ -54,13 +57,11 @@ const remove = async (req: Request, res: Response, next: NextFunction) => {
     /// validate user
     const itemDTO = parseBodyToDTO<RemoveWilistItemDTO>(
       req,
-      addWilistItemSchema
+      removeWilistItemSchema
     );
-    await validateExisting(itemDTO.userId, itemDTO.productId!);
-
+    await validateNotExisting(itemDTO.userId, itemDTO.productId!);
     /// get all wishlist
     const model = await service.remove(itemDTO);
-
     return res.status(200).json(model);
   } catch (error) {
     next(error);
@@ -78,6 +79,12 @@ async function validateExisting(userId: number, productId: number) {
   }
 }
 
+async function validateNotExisting(userId: number, productId: number) {
+  const existing = await service.getById({ userId, productId });
+  if (existing === null) {
+    throw new ResourceNotFoundErrorResponse("wishlist");
+  }
+}
 export default {
   getWishList: getAll,
   addWishList: addNew,

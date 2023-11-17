@@ -77,16 +77,12 @@ class WishlistRepository {
 
   // Remove
   async remove(dto: RemoveWilistItemDTO): Promise<any> {
+    const { id, userId, productId } = dto;
     const result = await this.db<RemoveWilistItemDTO>(WishlistTable)
-      .where("id", dto.id)
-      .orWhere(function () {
-        this.where("userId", dto.productId).andWhere(
-          "productId",
-          dto.productId
-        );
-      })
+      .where({ userId, productId })
       .delete();
-    return result;
+
+    return result || null;
   }
 }
 export default new WishlistRepository();
