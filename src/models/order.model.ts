@@ -1,11 +1,11 @@
 import { OrderItem } from "./orderItem.model";
 
 export interface Order {
-  id: number;
+  id?: number;
   createdDate: Date;
   totalPrice: number;
   sessionId: string;
-  orderItems: OrderItem[];
+  orderItems?: OrderItem[];
   userId: number;
 }
 export function validateOrder(order: Order): void {

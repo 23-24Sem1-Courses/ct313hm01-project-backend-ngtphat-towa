@@ -31,24 +31,33 @@ class OrderService {
   constructor() {}
 
   async getOrder(id: number, userId: number) {
-    const order = await this.orderRepository.getById(id, userId);
-    if (order === null) {
+    const orderDTO = await this.orderRepository.getById(id, userId);
+    const order = await this.getOrderItemsFromOrderDTO(orderDTO);
+    return order;
+  }
+  private async getOrderItemsFromOrderDTO(orderDTO: OrderDTO | null) {
+    if (orderDTO === null) {
       throw new ResourceNotFoundErrorResponse();
     }
-    const orderItems = await this.orderItemRepository.getById(id);
-    order.orderItems = orderItems ?? [];
+
+    const orderItems = await this.orderItemRepository.getById(orderDTO.id!);
+    const order: Order = {
+      ...orderDTO,
+      orderItems: orderItems!,
+    };
 
     return order;
   }
   async listOrders(userDTO: UserDTO) {
-    const orders = await this.orderRepository.getAll(userDTO.id);
-    if (orders === null) {
+    const orderDTOs = await this.orderRepository.getAll(userDTO.id);
+    if (orderDTOs === null) {
       throw new ResourceNotFoundErrorResponse();
     }
-    for (const order of orders) {
-      const orderItems = await this.orderItemRepository.getById(order.id!);
+    const orders: Order[] = [];
+    for (const orderDTO of orderDTOs) {
+      const order = await this.getOrderItemsFromOrderDTO(orderDTO);
 
-      order.orderItems = orderItems!;
+      orders.push(order);
     }
 
     return orders;
