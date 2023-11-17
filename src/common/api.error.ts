@@ -101,7 +101,7 @@ export class DatabaseErrorResponse extends ApiError {
 }
 
 export function validateIdDTO(req: Request): number {
-  if (!req.body.id || !req.params.id) throw new IdNotPresentError();
+  if (!req.body.id && !req.params.id) throw new IdNotPresentError();
 
   const id = Number(req.body.id ?? req.params.id);
   Logging.debug("validateIdDTO", id);
