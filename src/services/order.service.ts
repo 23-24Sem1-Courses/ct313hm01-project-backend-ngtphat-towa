@@ -48,8 +48,23 @@ class OrderService {
 
     return order;
   }
-  async listOrders(userDTO: UserDTO) {
-    const orderDTOs = await this.orderRepository.getAll(userDTO.id);
+  async getAllOrdersByUser(userDTO: UserDTO) {
+    const orderDTOs = await this.orderRepository.getAllByUser(userDTO.id);
+    if (orderDTOs === null) {
+      throw new ResourceNotFoundErrorResponse();
+    }
+    const orders: Order[] = [];
+    for (const orderDTO of orderDTOs) {
+      const order = await this.getOrderItemsFromOrderDTO(orderDTO);
+
+      orders.push(order);
+    }
+
+    return orders;
+  }
+
+  async getAllOrders() {
+    const orderDTOs = await this.orderRepository.getAll();
     if (orderDTOs === null) {
       throw new ResourceNotFoundErrorResponse();
     }

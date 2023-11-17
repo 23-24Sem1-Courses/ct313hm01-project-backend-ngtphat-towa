@@ -28,7 +28,7 @@ const checkoutList = async (
       req,
       checkoutItemSchema
     );
-    Logging.info_data("check-out-item", userDTO);
+    Logging.debug("check-out-item", userDTO);
     // add user id into each checkout items
     for (const item of checkOutItemList) {
       item.userId = userDTO.id;
@@ -74,7 +74,7 @@ const getAllOrders = async (
     // Retrive and validate
     const userDTO = parseUserToDTO<UserDTO>(req, userSchema);
 
-    const data = await orderService.listOrders(userDTO);
+    const data = await orderService.getAllOrdersByUser(userDTO);
 
     return res.status(200).json(data);
   } catch (error) {

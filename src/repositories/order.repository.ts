@@ -9,11 +9,15 @@ class OrderRepository {
   private table = "orders";
   constructor() {}
 
-  async getAll(userId: number): Promise<OrderDTO[]> {
+  async getAllByUser(userId: number): Promise<OrderDTO[]> {
     return await this.db(this.table)
       .where("userId", userId)
       .orderBy("createdDate", "desc")
       .select("*");
+  }
+
+  async getAll(): Promise<OrderDTO[]> {
+    return await this.db(this.table).select("*");
   }
 
   async getById(id: number, userId: number): Promise<OrderDTO | null> {

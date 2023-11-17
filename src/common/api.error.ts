@@ -1,5 +1,6 @@
 import Joi from "joi";
 import { Request } from "express";
+import Logging from "./Logging";
 
 export default class ApiError extends Error {
   type?: string;
@@ -100,9 +101,10 @@ export class DatabaseErrorResponse extends ApiError {
 }
 
 export function validateIdDTO(req: Request): number {
-  if (req.body.id) throw new IdNotPresentError();
+  if (!req.body.id || !req.params.id) throw new IdNotPresentError();
 
-  const id = Number(req.body.id);
+  const id = Number(req.body.id ?? req.params.id);
+  Logging.debug("validateIdDTO", id);
 
   if (isNaN(id)) {
     throw new InvalidParameterErrorResponse("id", id);
@@ -110,6 +112,7 @@ export function validateIdDTO(req: Request): number {
 
   return id;
 }
+
 export class UserNotPermittedError extends ApiError {
   constructor() {
     super(

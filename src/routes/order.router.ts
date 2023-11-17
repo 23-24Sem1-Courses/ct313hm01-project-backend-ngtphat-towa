@@ -15,9 +15,16 @@ OrderRouter.route("/place-order").post(
   controller.placeOrder
 );
 
-/** get all order */
+/** get all order by user*/
 OrderRouter.route("/").get(
   userController.validateToken,
+  controller.getAllOrders
+);
+
+/** get all order */
+OrderRouter.route("/all").get(
+  userController.validateToken,
+  userController.validateAdminRole,
   controller.getAllOrders
 );
 
