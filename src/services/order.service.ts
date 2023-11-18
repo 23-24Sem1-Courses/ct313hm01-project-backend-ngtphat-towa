@@ -16,6 +16,8 @@ import { UserDTO } from "../Dtos/user/user.dto";
 import Decimal from "decimal.js";
 import { SessionDTO } from "../Dtos/checkout/session.dto";
 import { DeliveryStatus } from "../enums/order.status.enum";
+import { UpdateCartItemDTO } from "../Dtos/cart/update.item.dto";
+import { UpdateOrderStatusDTO } from "../Dtos/order/update.status.dto";
 
 // supply success and failure url for stripe
 const successURL = config.client.baseUrl + "payment/success";
@@ -36,6 +38,17 @@ class OrderService {
     const order = await this.getOrderItemsFromOrderDTO(orderDTO);
     return order;
   }
+
+  async updateOrderStatus(dto: UpdateOrderStatusDTO) {
+    // check dto exist
+    const orderDTO = await this.orderRepository.getOrderById(dto.id!);
+    if (orderDTO === null) {
+      throw new ResourceNotFoundErrorResponse();
+    }
+    const order = await this.orderRepository.updateOrderStatus(dto);
+    return order;
+  }
+
   async getOrder(id: number) {
     const orderDTO = await this.orderRepository.getOrderById(id);
     const order = await this.getOrderItemsFromOrderDTO(orderDTO);

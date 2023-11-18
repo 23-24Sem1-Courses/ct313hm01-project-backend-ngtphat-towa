@@ -3,6 +3,7 @@ import config from "../config/config";
 import { Order } from "../models/order.model";
 import { OrderDTO } from "../Dtos/order/order.dto";
 import Logging from "../common/Logging";
+import { UpdateOrderStatusDTO } from "../Dtos/order/update.status.dto";
 
 class OrderRepository {
   private db = knex(config.knex);
@@ -30,8 +31,9 @@ class OrderRepository {
   }
 
   async getOrderById(id: number): Promise<OrderDTO | null> {
-    const data = await this.db(this.table).where({ id: id }).first();
+    const data = await this.db<OrderDTO>(this.table).where({ id: id }).first();
 
+    Logging.debug("getOrderById", data);
     return data || null;
   }
   async search(searchCriteria: Partial<Order>): Promise<Order[]> {
@@ -54,9 +56,15 @@ class OrderRepository {
     return (await this.db(this.table).where({ id }).first()) || null;
   }
 
-  async update(id: number, item: Order): Promise<Order | null> {
-    await this.db(this.table).where({ id: id }).update(item);
-    return (await this.db(this.table).where({ id: id }).first()) || null;
+  async updateOrderStatus(dto: UpdateOrderStatusDTO): Promise<OrderDTO | null> {
+    const query = this.db(this.table)
+      .where({ id: dto.id!, sessionId: dto.sessionId })
+      .update({
+        deliveryStatus: dto.deliveryStatus.valueOf(),
+      });
+    Logging.debug("updateOrderStatus", query.toSQL());
+    await query;
+    return await this.getOrderById(dto.id!);
   }
 
   async delete(id: number): Promise<void> {

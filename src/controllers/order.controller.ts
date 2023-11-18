@@ -143,14 +143,14 @@ const updateOrderStatus = async (
 ) => {
   try {
     const id = Number(req.params.id);
-    const updateOrderStatusDTO = parseUserToDTO<UpdateOrderStatusDTO>(
+    const updateOrderStatusDTO = parseBodyToDTO<UpdateOrderStatusDTO>(
       req,
       updateOrderStatusSchema
     );
 
-    /// TODO: implemen the update
+    const order =await orderService.updateOrderStatus(updateOrderStatusDTO);
 
-    return res.status(200).json({ id, updateOrderStatusDTO });
+    return res.status(200).json(order);
   } catch (error) {
     next(error);
   }
