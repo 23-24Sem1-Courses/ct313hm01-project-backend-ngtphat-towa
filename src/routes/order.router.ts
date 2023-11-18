@@ -3,6 +3,27 @@ import controller from "../controllers/order.controller";
 import userController from "../controllers/user.controller";
 const OrderRouter = express.Router();
 
+/// ------------ ADMIN
+/** get all order */
+OrderRouter.route("/admin").get(
+  userController.validateToken,
+  userController.validateAdminRole,
+  controller.getAllOrders
+);
+/** update */
+OrderRouter.route("/admin/update").get(
+  userController.validateToken,
+  userController.validateAdminRole,
+  controller.updateOrderStatus
+);
+/** get  order by id */
+OrderRouter.route("/admin/:id").get(
+  userController.validateToken,
+  userController.validateAdminRole,
+  controller.getOrderById
+);
+
+
 /** create-checkout-session */
 OrderRouter.route("/create-checkout-session").post(
   userController.validateToken,
@@ -15,23 +36,17 @@ OrderRouter.route("/place-order").post(
   controller.placeOrder
 );
 
-/** get all order by user*/
-OrderRouter.route("/").get(
-  userController.validateToken,
-  controller.getAllOrders
-);
-
-/** get all order */
+/** get all user order*/
 OrderRouter.route("/all").get(
   userController.validateToken,
-  userController.validateAdminRole,
-  controller.getAllOrders
+  controller.getAllOrdersByUser
 );
 
-/** get order by id */
+/** get user order by id */
 OrderRouter.route("/:id").get(
   userController.validateToken,
-  controller.getOrderById
+  controller.getUserOrderById
 );
+
 
 export default OrderRouter;

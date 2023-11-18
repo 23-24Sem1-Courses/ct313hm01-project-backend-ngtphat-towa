@@ -15,6 +15,7 @@ import CartService from "../services/cart.service";
 import { UserDTO } from "../Dtos/user/user.dto";
 import Decimal from "decimal.js";
 import { SessionDTO } from "../Dtos/checkout/session.dto";
+import { DeliveryStatus } from "../enums/order.status.enum";
 
 // supply success and failure url for stripe
 const successURL = config.client.baseUrl + "payment/success";
@@ -30,8 +31,13 @@ class OrderService {
 
   constructor() {}
 
-  async getOrder(id: number, userId: number) {
-    const orderDTO = await this.orderRepository.getById(id, userId);
+  async getOrderByUser(id: number, userId: number) {
+    const orderDTO = await this.orderRepository.getUserOrderById(id, userId);
+    const order = await this.getOrderItemsFromOrderDTO(orderDTO);
+    return order;
+  }
+  async getOrder(id: number) {
+    const orderDTO = await this.orderRepository.getOrderById(id);
     const order = await this.getOrderItemsFromOrderDTO(orderDTO);
     return order;
   }
@@ -40,7 +46,9 @@ class OrderService {
       throw new ResourceNotFoundErrorResponse();
     }
 
-    const orderItems = await this.orderItemRepository.getById(orderDTO.id!);
+    const orderItems = await this.orderItemRepository.getOrderById(
+      orderDTO.id!
+    );
     const order: Order = {
       ...orderDTO,
       orderItems: orderItems!,
@@ -120,6 +128,7 @@ class OrderService {
     // create DTO
     const newOrder: OrderDTO = {
       createdDate: new Date(),
+      deliveryStatus: DeliveryStatus.PENDING,
       sessionId: sessionDTO.sessionId,
       userId: user.id,
       totalPrice: cartDTO.totalCost,

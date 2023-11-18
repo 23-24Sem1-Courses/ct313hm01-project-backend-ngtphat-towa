@@ -14,6 +14,10 @@ import { SessionDTO, sessionSchema } from "../Dtos/checkout/session.dto";
 import { User } from "../models/user.model";
 import { bool } from "joi";
 import Logging from "../common/Logging";
+import {
+  UpdateOrderStatusDTO,
+  updateOrderStatusSchema,
+} from "../Dtos/order/update.status.dto";
 
 /** /create-checkout-session */
 const checkoutList = async (
@@ -65,7 +69,7 @@ const placeOrder = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 /**  get all orders */
-const getAllOrders = async (
+const getAllOrdersByUser = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -81,7 +85,38 @@ const getAllOrders = async (
     next(error);
   }
 };
+/**  get all orders */
+const getAllOrders = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const data = await orderService.getAllOrders();
+    Logging.debug(getAllOrders, data);
+    return res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
+};
 
+/** get orderitems for an order */
+const getUserOrderById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = Number(req.params.id);
+    const userDTO = parseUserToDTO<UserDTO>(req, userSchema);
+
+    const data = await orderService.getOrderByUser(id, userDTO.id);
+
+    return res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
+};
 /** get orderitems for an order */
 const getOrderById = async (
   req: Request,
@@ -92,9 +127,30 @@ const getOrderById = async (
     const id = Number(req.params.id);
     const userDTO = parseUserToDTO<UserDTO>(req, userSchema);
 
-    const data = await orderService.getOrder(id, userDTO.id);
+    const data = await orderService.getOrder(id);
 
     return res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
+};
+
+/** get orderitems for an order */
+const updateOrderStatus = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = Number(req.params.id);
+    const updateOrderStatusDTO = parseUserToDTO<UpdateOrderStatusDTO>(
+      req,
+      updateOrderStatusSchema
+    );
+
+    /// TODO: implemen the update
+
+    return res.status(200).json({ id, updateOrderStatusDTO });
   } catch (error) {
     next(error);
   }
@@ -104,5 +160,8 @@ export default {
   checkoutList,
   placeOrder,
   getAllOrders,
+  getAllOrdersByUser,
+  getUserOrderById,
   getOrderById,
+  updateOrderStatus,
 };
