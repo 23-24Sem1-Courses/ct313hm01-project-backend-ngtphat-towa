@@ -59,7 +59,6 @@ const validateAdminRole = async (
   try {
     const uesrDTO = parseUserToDTO<UserDTO>(req, userSchema);
     const userRole = uesrDTO.role;
-    Logging.debug("validateAdminRole:", uesrDTO);
 
     if (userRole && userRole !== Role.admin) {
       throw new UnauthorizedAccessErrorResponse();
@@ -73,7 +72,6 @@ const checkUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const uesrDTO = parseUserToDTO<UserDTO>(req, userSchema);
     const userRole = uesrDTO.role;
-    Logging.debug("checkUser:", uesrDTO);
 
     if (!(userRole && userRole === Role.admin)) {
       delete uesrDTO.role;

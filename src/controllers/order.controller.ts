@@ -32,7 +32,6 @@ const checkoutList = async (
       req,
       checkoutItemSchema
     );
-    Logging.debug("check-out-item", userDTO);
     // add user id into each checkout items
     for (const item of checkOutItemList) {
       item.userId = userDTO.id;
@@ -93,7 +92,6 @@ const getAllOrders = async (
 ) => {
   try {
     const data = await orderService.getAllOrders();
-    Logging.debug(getAllOrders, data);
     return res.status(200).json(data);
   } catch (error) {
     next(error);
@@ -142,13 +140,13 @@ const updateOrderStatus = async (
   next: NextFunction
 ) => {
   try {
-    const id = Number(req.params.id);
+    Logging.debug("updateOrderStatus", req.body);
     const updateOrderStatusDTO = parseBodyToDTO<UpdateOrderStatusDTO>(
       req,
       updateOrderStatusSchema
     );
 
-    const order =await orderService.updateOrderStatus(updateOrderStatusDTO);
+    const order = await orderService.updateOrderStatus(updateOrderStatusDTO);
 
     return res.status(200).json(order);
   } catch (error) {

@@ -40,6 +40,7 @@ export function parseAuthenticationToDTO<T>(
   if (!req.headers.authorization) {
     throw new AuthTokenNotPresentError();
   }
+
   const { error, value } = schema.validate({
     token: req.headers.authorization?.split(" ")[1],
   });

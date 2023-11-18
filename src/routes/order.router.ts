@@ -4,14 +4,8 @@ import userController from "../controllers/user.controller";
 const OrderRouter = express.Router();
 
 /// ------------ ADMIN
-/** get all order */
-OrderRouter.route("/admin").get(
-  userController.validateToken,
-  userController.validateAdminRole,
-  controller.getAllOrders
-);
 /** update */
-OrderRouter.route("/admin/update").get(
+OrderRouter.route("/admin/update").put(
   userController.validateToken,
   userController.validateAdminRole,
   controller.updateOrderStatus
@@ -22,7 +16,12 @@ OrderRouter.route("/admin/:id").get(
   userController.validateAdminRole,
   controller.getOrderById
 );
-
+/** get all order */
+OrderRouter.route("/admin").get(
+  userController.validateToken,
+  userController.validateAdminRole,
+  controller.getAllOrders
+);
 
 /** create-checkout-session */
 OrderRouter.route("/create-checkout-session").post(
@@ -47,6 +46,5 @@ OrderRouter.route("/:id").get(
   userController.validateToken,
   controller.getUserOrderById
 );
-
 
 export default OrderRouter;

@@ -32,8 +32,6 @@ class OrderRepository {
 
   async getOrderById(id: number): Promise<OrderDTO | null> {
     const data = await this.db<OrderDTO>(this.table).where({ id: id }).first();
-
-    Logging.debug("getOrderById", data);
     return data || null;
   }
   async search(searchCriteria: Partial<Order>): Promise<Order[]> {
