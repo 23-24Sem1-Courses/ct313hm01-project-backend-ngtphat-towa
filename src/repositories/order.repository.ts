@@ -17,13 +17,20 @@ class OrderRepository {
   }
 
   async getAll(): Promise<OrderDTO[]> {
-    return await this.db(this.table).select("*");
+    const result = await this.db(this.table).select("*");
+    return result || null;
   }
 
-  async getById(id: number, userId: number): Promise<OrderDTO | null> {
+  async getUserOrderById(id: number, userId: number): Promise<OrderDTO | null> {
     const data = await this.db(this.table)
       .where({ id: id, userId: userId })
       .first();
+
+    return data || null;
+  }
+
+  async getOrderById(id: number): Promise<OrderDTO | null> {
+    const data = await this.db(this.table).where({ id: id }).first();
 
     return data || null;
   }

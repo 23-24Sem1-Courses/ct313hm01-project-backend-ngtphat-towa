@@ -14,7 +14,7 @@ class OrderItemRepository {
     return await this.db(this.table).select("*");
   }
 
-  async getById(orderId: number): Promise<OrderItem[] | null> {
+  async getOrderById(orderId: number): Promise<OrderItem[] | null> {
     const orderItemsDTOs = await this.db<OrderItemDTO>(this.table).where({
       orderId: orderId,
     });
