@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db
--- Generation Time: Nov 18, 2023 at 05:23 AM
+-- Generation Time: Nov 18, 2023 at 10:32 AM
 -- Server version: 8.2.0
 -- PHP Version: 8.2.8
 
@@ -211,7 +211,7 @@ INSERT INTO `categories` (`id`, `name`, `description`, `imageUrl`) VALUES
 CREATE TABLE `orders` (
   `id` int NOT NULL,
   `createdDate` datetime NOT NULL,
-  `deliveryStatus` enum('pending','processing','shipped','delivered','cancelled') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `deliveryStatus` enum('pending','processing','shipped','delivered','cancelled') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'pending',
   `totalPrice` double NOT NULL,
   `sessionId` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   `userId` int DEFAULT NULL
@@ -222,8 +222,10 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`id`, `createdDate`, `deliveryStatus`, `totalPrice`, `sessionId`, `userId`) VALUES
-(1, '2023-11-09 23:31:01', 'pending', 1169.88, 'cs_test_b1pV0tUEXxzTKWksCZP1SIdmHJfyNN2kCI1PXEOyU1FgzwSjpuaoxuZwOR', 32),
-(2, '2023-11-10 14:44:22', 'pending', 269.91, 'cs_test_b1t2hfj2Azp74y3n4vspQsVjWkXi7uzmZudZWsWf155tqDF7gEqOz4BU37', 32);
+(1, '2023-11-09 23:31:01', 'shipped', 1169.88, 'cs_test_b1pV0tUEXxzTKWksCZP1SIdmHJfyNN2kCI1PXEOyU1FgzwSjpuaoxuZwOR', 32),
+(2, '2023-11-10 14:44:22', 'pending', 269.91, 'cs_test_b1t2hfj2Azp74y3n4vspQsVjWkXi7uzmZudZWsWf155tqDF7gEqOz4BU37', 32),
+(3, '2023-11-18 13:28:27', 'delivered', 949.98, 'cs_test_b1TicZFazH0CDWcF9oFEQlKMnKR151kH2vgQi1LEWQnbfJupzQY2a1Jhvf', 34),
+(4, '2023-11-18 14:48:36', 'shipped', 469.96, 'cs_test_b1EtOuHFqxhC6rc6qKv84aXYHBCH4B37iFMatbfbDawRqYu7wE6F2nGsvT', 34);
 
 -- --------------------------------------------------------
 
@@ -251,7 +253,11 @@ INSERT INTO `order_items` (`id`, `quantity`, `price`, `createdDate`, `orderId`, 
 (4, 3, 119.99, '2023-11-09 23:31:01', 1, 24),
 (5, 3, 19.99, '2023-11-10 14:44:22', 2, 22),
 (6, 3, 19.99, '2023-11-10 14:44:22', 2, 30),
-(7, 3, 49.99, '2023-11-10 14:44:22', 2, 27);
+(7, 3, 49.99, '2023-11-10 14:44:22', 2, 27),
+(8, 1, 799.99, '2023-11-18 06:28:27', 3, 19),
+(9, 1, 149.99, '2023-11-18 06:28:27', 3, 23),
+(10, 1, 19.99, '2023-11-18 07:48:35', 4, 22),
+(11, 3, 149.99, '2023-11-18 07:48:35', 4, 23);
 
 -- --------------------------------------------------------
 
@@ -319,7 +325,17 @@ INSERT INTO `tokens` (`id`, `token`, `createdDate`, `userId`, `expiredTime`) VAL
 (49, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzIsImZpcnN0TmFtZSI6IlBoYXQiLCJsYXN0TmFtZSI6Ik5ndXllbiIsImVtYWlsIjoidGVzdDIxMjJAZ21haWwuY29tIiwicm9sZSI6MCwiY3JlYXRlZERhdGUiOiIyMDIzLTExLTA0VDA5OjAzOjM1LjAwMFoiLCJpYXQiOjE2OTk3OTAyNjUsImV4cCI6MzM5OTYxNjUzMCwiaXNzIjoiY29vbElzc3VlciJ9._sXyMkzYuqNPx037OnnHfk_8DomIUAhv9r1e9_b2iCI', '2023-11-04 16:03:35', 32, '2023-11-12 21:57:45'),
 (50, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzIsImZpcnN0TmFtZSI6IlBoYXQiLCJsYXN0TmFtZSI6Ik5ndXllbiIsImVtYWlsIjoidGVzdDIxMjJAZ21haWwuY29tIiwicm9sZSI6MCwiY3JlYXRlZERhdGUiOiIyMDIzLTExLTA0VDA5OjAzOjM1LjAwMFoiLCJpYXQiOjE2OTk4Njc4MjUsImV4cCI6MzM5OTc3MTY1MCwiaXNzIjoiY29vbElzc3VlciJ9.3ucuFqzIPuroaa1rCmAqsMlrfjvHwAc2Xi3l5nKHEH8', '2023-11-04 16:03:35', 32, '2023-11-13 19:30:25'),
 (51, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzIsImZpcnN0TmFtZSI6IlBoYXQiLCJsYXN0TmFtZSI6Ik5ndXllbiIsImVtYWlsIjoidGVzdDIxMjJAZ21haWwuY29tIiwicm9sZSI6MCwiY3JlYXRlZERhdGUiOiIyMDIzLTExLTA0VDA5OjAzOjM1LjAwMFoiLCJpYXQiOjE2OTk5NjQyNzUsImV4cCI6MzM5OTk2NDU1MCwiaXNzIjoiY29vbElzc3VlciJ9.LK-t6hzKMp4fpkiG-2Up2MFiyMHxaMOX0UfN7qnPx-0', '2023-11-04 16:03:35', 32, '2023-11-14 22:17:55'),
-(52, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzIsImZpcnN0TmFtZSI6IlBoYXQiLCJsYXN0TmFtZSI6Ik5ndXllbiIsImVtYWlsIjoidGVzdDIxMjJAZ21haWwuY29tIiwicm9sZSI6MCwiY3JlYXRlZERhdGUiOiIyMDIzLTExLTA0VDAyOjAzOjM1LjAwMFoiLCJpYXQiOjE3MDAyODMyNjQsImV4cCI6MzQwMDYwMjUyOCwiaXNzIjoiY29vbElzc3VlciJ9._EVZOXxia9DIu9q9fTfjxqn5tAUYWEC56xpd-85x8uw', '2023-11-04 09:03:35', 32, '2023-11-18 21:54:24');
+(52, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzIsImZpcnN0TmFtZSI6IlBoYXQiLCJsYXN0TmFtZSI6Ik5ndXllbiIsImVtYWlsIjoidGVzdDIxMjJAZ21haWwuY29tIiwicm9sZSI6MCwiY3JlYXRlZERhdGUiOiIyMDIzLTExLTA0VDAyOjAzOjM1LjAwMFoiLCJpYXQiOjE3MDAyODMyNjQsImV4cCI6MzQwMDYwMjUyOCwiaXNzIjoiY29vbElzc3VlciJ9._EVZOXxia9DIu9q9fTfjxqn5tAUYWEC56xpd-85x8uw', '2023-11-04 09:03:35', 32, '2023-11-18 21:54:24'),
+(53, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzQsImZpcnN0TmFtZSI6Ik5ndXllbiIsImxhc3ROYW1lIjoiUGhhdCIsImVtYWlsIjoicGhhdGIyMDA1ODUzQHN0dWRlbnQuY3R1LmVkdS52biIsInJvbGUiOjAsImNyZWF0ZWREYXRlIjoiMjAyMy0xMS0xMlQwMzoxMzozOC4wMDBaIiwiaWF0IjoxNzAwMjg4MDc2LCJleHAiOjM0MDA2MTIxNTIsImlzcyI6ImNvb2xJc3N1ZXIifQ.Ll_OUMpx0ZdxtElknTLNnE11-BOdcr_1zj8Iesw8viY', '2023-11-12 10:13:38', 34, '2023-11-18 23:14:36'),
+(54, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzQsImZpcnN0TmFtZSI6Ik5ndXllbiIsImxhc3ROYW1lIjoiUGhhdCIsImVtYWlsIjoicGhhdGIyMDA1ODUzQHN0dWRlbnQuY3R1LmVkdS52biIsInJvbGUiOjAsImNyZWF0ZWREYXRlIjoiMjAyMy0xMS0xMlQwMzoxMzozOC4wMDBaIiwiaWF0IjoxNzAwMjg4ODQ2LCJleHAiOjM0MDA2MTM2OTIsImlzcyI6ImNvb2xJc3N1ZXIifQ.x7veQHKRDXFp3f2wLgqnogFRik3BLsZjBrzbVSlsLBs', '2023-11-12 10:13:38', 34, '2023-11-18 23:27:26'),
+(55, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzIsImZpcnN0TmFtZSI6IlBoYXQiLCJsYXN0TmFtZSI6Ik5ndXllbiIsImVtYWlsIjoidGVzdDIxMjJAZ21haWwuY29tIiwicm9sZSI6MCwiY3JlYXRlZERhdGUiOiIyMDIzLTExLTA0VDAyOjAzOjM1LjAwMFoiLCJpYXQiOjE3MDAyODkyMDQsImV4cCI6MzQwMDYxNDQwOCwiaXNzIjoiY29vbElzc3VlciJ9.16qOTrkl4Oyrxy297c_EBhMDdkhKPgxNO82K3zJCsgI', '2023-11-04 09:03:35', 32, '2023-11-18 23:33:24'),
+(56, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzIsImZpcnN0TmFtZSI6IlBoYXQiLCJsYXN0TmFtZSI6Ik5ndXllbiIsImVtYWlsIjoidGVzdDIxMjJAZ21haWwuY29tIiwicm9sZSI6MCwiY3JlYXRlZERhdGUiOiIyMDIzLTExLTA0VDAyOjAzOjM1LjAwMFoiLCJpYXQiOjE3MDAyODkzNTksImV4cCI6MzQwMDYxNDcxOCwiaXNzIjoiY29vbElzc3VlciJ9._wcJhomg9zRhr23QAmYY7Nq4uG4xYuBlohveFeoTiaE', '2023-11-04 09:03:35', 32, '2023-11-18 23:35:59'),
+(57, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzQsImZpcnN0TmFtZSI6Ik5ndXllbiIsImxhc3ROYW1lIjoiUGhhdCIsImVtYWlsIjoicGhhdGIyMDA1ODUzQHN0dWRlbnQuY3R1LmVkdS52biIsInJvbGUiOjAsImNyZWF0ZWREYXRlIjoiMjAyMy0xMS0xMlQwMzoxMzozOC4wMDBaIiwiaWF0IjoxNzAwMjg5Mzc2LCJleHAiOjM0MDA2MTQ3NTIsImlzcyI6ImNvb2xJc3N1ZXIifQ.fkWBQT6iSldGVbBq-ktiVSZAdh_xNn30IyKAjOqCcPg', '2023-11-12 10:13:38', 34, '2023-11-18 23:36:17'),
+(58, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzQsImZpcnN0TmFtZSI6Ik5ndXllbiIsImxhc3ROYW1lIjoiUGhhdCIsImVtYWlsIjoicGhhdGIyMDA1ODUzQHN0dWRlbnQuY3R1LmVkdS52biIsInJvbGUiOjAsImNyZWF0ZWREYXRlIjoiMjAyMy0xMS0xMlQwMzoxMzozOC4wMDBaIiwiaWF0IjoxNzAwMjkwMTk2LCJleHAiOjM0MDA2MTYzOTIsImlzcyI6ImNvb2xJc3N1ZXIifQ.DliNRJGWS46D7yZhqElojVRKt_yM1jN3FcA24eO3v1o', '2023-11-12 10:13:38', 34, '2023-11-18 23:49:57'),
+(59, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzQsImZpcnN0TmFtZSI6Ik5ndXllbiIsImxhc3ROYW1lIjoiUGhhdCIsImVtYWlsIjoicGhhdGIyMDA1ODUzQHN0dWRlbnQuY3R1LmVkdS52biIsInJvbGUiOjAsImNyZWF0ZWREYXRlIjoiMjAyMy0xMS0xMlQwMzoxMzozOC4wMDBaIiwiaWF0IjoxNzAwMjkwMjMxLCJleHAiOjM0MDA2MTY0NjIsImlzcyI6ImNvb2xJc3N1ZXIifQ.ac0izYrxoOJBZOzGgGR3vebFuLJk6rxm2p9S4Xp-sAg', '2023-11-12 10:13:38', 34, '2023-11-18 23:50:32'),
+(60, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzQsImZpcnN0TmFtZSI6Ik5ndXllbiIsImxhc3ROYW1lIjoiUGhhdCIsImVtYWlsIjoicGhhdGIyMDA1ODUzQHN0dWRlbnQuY3R1LmVkdS52biIsInJvbGUiOjAsImNyZWF0ZWREYXRlIjoiMjAyMy0xMS0xMlQwMzoxMzozOC4wMDBaIiwiaWF0IjoxNzAwMjkzNjUzLCJleHAiOjM0MDA2MjMzMDYsImlzcyI6ImNvb2xJc3N1ZXIifQ.ppGfyOI8vejXoVzdw-WShrEVr5ap81N3P2XVKO2a3v4', '2023-11-12 10:13:38', 34, '2023-11-19 00:47:33'),
+(61, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzQsImZpcnN0TmFtZSI6Ik5ndXllbiIsImxhc3ROYW1lIjoiUGhhdCIsImVtYWlsIjoicGhhdGIyMDA1ODUzQHN0dWRlbnQuY3R1LmVkdS52biIsInJvbGUiOjAsImNyZWF0ZWREYXRlIjoiMjAyMy0xMS0xMlQwMzoxMzozOC4wMDBaIiwiaWF0IjoxNzAwMjk1ODg3LCJleHAiOjM0MDA2Mjc3NzQsImlzcyI6ImNvb2xJc3N1ZXIifQ.GmiPxghtuZdtteKCKB_1k4Uz-oOyHgCIGWG2IR47u2Q', '2023-11-12 10:13:38', 34, '2023-11-19 01:24:47'),
+(62, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzIsImZpcnN0TmFtZSI6IlBoYXQiLCJsYXN0TmFtZSI6Ik5ndXllbiIsImVtYWlsIjoidGVzdDIxMjJAZ21haWwuY29tIiwicm9sZSI6MCwiY3JlYXRlZERhdGUiOiIyMDIzLTExLTA0VDAyOjAzOjM1LjAwMFoiLCJpYXQiOjE3MDAyOTY3NDgsImV4cCI6MzQwMDYyOTQ5NiwiaXNzIjoiY29vbElzc3VlciJ9.rmMGzMpSDNMMoWLnWMR0UQlzrjr1ZRJAnuMCMfLUfWA', '2023-11-04 09:03:35', 32, '2023-11-19 01:39:09');
 
 -- --------------------------------------------------------
 
@@ -342,9 +358,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `email`, `firstName`, `lastName`, `password`, `role`, `createdDate`) VALUES
-(32, 'test2122@gmail.com', 'Phat', 'Nguyen', '$2a$10$TKKRZinwjnzZPBkKgoHcF.a8OfPpweAuvPRaT08uhu3YTG8giyW0G', '0', '2023-11-04 09:03:35'),
+(32, 'test2122@gmail.com', 'Phat', 'Nguyen', '$2a$10$TKKRZinwjnzZPBkKgoHcF.a8OfPpweAuvPRaT08uhu3YTG8giyW0G', '1', '2023-11-04 09:03:35'),
 (33, 'test21222@gmail.com', 'Phat', 'Nguyen', '$2a$10$b4O5iOOz0ujSdb.PnifzzuSZYvKde2iTjmEKJ6Vui9GYYDM5rUfZS', '0', '2023-11-04 09:21:38'),
-(34, 'phatb2005853@student.ctu.edu.vn', 'Nguyen', 'Phat', '$2a$10$Rs9ILsfShvmQW3UBxYwnEO.JfZA2nGlDn6ull08pv2z7TQbvS4akW', '0', '2023-11-12 10:13:38');
+(34, 'phatb2005853@student.ctu.edu.vn', 'Nguyen', 'Phat', '$2a$10$Rs9ILsfShvmQW3UBxYwnEO.JfZA2nGlDn6ull08pv2z7TQbvS4akW', '1', '2023-11-12 10:13:38');
 
 -- --------------------------------------------------------
 
@@ -368,7 +384,8 @@ INSERT INTO `wishlist` (`id`, `userId`, `createdDate`, `productId`) VALUES
 (9, 32, '2023-11-06 09:50:03', 18),
 (10, 32, '2023-11-06 09:50:03', 20),
 (11, 32, '2023-11-06 09:50:03', 19),
-(14, 32, '2023-11-13 09:52:13', 22);
+(14, 32, '2023-11-13 09:52:13', 22),
+(16, 34, '2023-11-18 07:47:43', 22);
 
 --
 -- Indexes for dumped tables
@@ -446,13 +463,13 @@ ALTER TABLE `wishlist`
 -- AUTO_INCREMENT for table `carts`
 --
 ALTER TABLE `carts`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `cart_items`
 --
 ALTER TABLE `cart_items`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -464,13 +481,13 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -482,7 +499,7 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT for table `tokens`
 --
 ALTER TABLE `tokens`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -494,7 +511,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `wishlist`
 --
 ALTER TABLE `wishlist`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- Constraints for dumped tables
