@@ -22,4 +22,4 @@ export const updateUserSchema = Joi.object({
   role: Joi.number().required().messages({
     "Role.required": "Role is required",
   }),
-});
+}).options({ stripUnknown: true });

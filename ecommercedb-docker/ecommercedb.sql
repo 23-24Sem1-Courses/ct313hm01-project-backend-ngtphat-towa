@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Nov 14, 2023 at 02:25 PM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- Host: db
+-- Generation Time: Nov 18, 2023 at 05:23 AM
+-- Server version: 8.2.0
+-- PHP Version: 8.2.8
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -25,7 +25,7 @@ DELIMITER $$
 --
 -- Procedures
 --
-CREATE DEFINER=`` PROCEDURE `AddToCart` (IN `p_cartId` INT, IN `p_userId` INT, IN `p_productId` INT, IN `p_quantity` INT)   BEGIN
+CREATE DEFINER=``@`%` PROCEDURE `AddToCart` (IN `p_cartId` INT, IN `p_userId` INT, IN `p_productId` INT, IN `p_quantity` INT)   BEGIN
     DECLARE v_price DECIMAL(10,2);
     DECLARE v_totalCost DECIMAL(10,2);
 
@@ -43,7 +43,7 @@ CREATE DEFINER=`` PROCEDURE `AddToCart` (IN `p_cartId` INT, IN `p_userId` INT, I
     CALL UpdateTotalCost(p_cartId, p_userId, v_totalCost);
 END$$
 
-CREATE DEFINER=`` PROCEDURE `CreateCart` (IN `p_userId` INT)   BEGIN
+CREATE DEFINER=``@`%` PROCEDURE `CreateCart` (IN `p_userId` INT)   BEGIN
     DECLARE v_cartId INT;
 
     -- Insert a new row into the Cart table
@@ -57,11 +57,11 @@ CREATE DEFINER=`` PROCEDURE `CreateCart` (IN `p_userId` INT)   BEGIN
     SELECT * FROM carts WHERE id = v_cartId;
 END$$
 
-CREATE DEFINER=`` PROCEDURE `GetCart` (IN `p_userId` INT)   BEGIN
+CREATE DEFINER=``@`%` PROCEDURE `GetCart` (IN `p_userId` INT)   BEGIN
      SELECT * FROM carts WHERE userId= p_userId ORDER BY id DESC LIMIT 1;
 END$$
 
-CREATE DEFINER=`` PROCEDURE `GetCartItems` (IN `p_cartId` INT)   BEGIN
+CREATE DEFINER=``@`%` PROCEDURE `GetCartItems` (IN `p_cartId` INT)   BEGIN
     SELECT 
         ci.id, 
         ci.cartId, 
@@ -80,7 +80,7 @@ CREATE DEFINER=`` PROCEDURE `GetCartItems` (IN `p_cartId` INT)   BEGIN
         ci.cartId = p_cartId;
 END$$
 
-CREATE DEFINER=`` PROCEDURE `RemoveCartItem` (IN `p_userId` INT, IN `p_cartId` INT, IN `p_productId` INT)   BEGIN
+CREATE DEFINER=``@`%` PROCEDURE `RemoveCartItem` (IN `p_userId` INT, IN `p_cartId` INT, IN `p_productId` INT)   BEGIN
     DECLARE v_quantity INT;
     DECLARE v_price DECIMAL(10,2);
     DECLARE v_totalCostDifference DECIMAL(10,2);
@@ -98,7 +98,7 @@ CREATE DEFINER=`` PROCEDURE `RemoveCartItem` (IN `p_userId` INT, IN `p_cartId` I
     CALL UpdateTotalCost(p_cartId, p_userId, -v_totalCostDifference);
 END$$
 
-CREATE DEFINER=`` PROCEDURE `UpdateCartItemQuantity` (IN `p_userId` INT, IN `p_cartId` INT, IN `p_productId` INT, IN `p_newQuantity` INT)   BEGIN
+CREATE DEFINER=``@`%` PROCEDURE `UpdateCartItemQuantity` (IN `p_userId` INT, IN `p_cartId` INT, IN `p_productId` INT, IN `p_newQuantity` INT)   BEGIN
     DECLARE v_oldQuantity INT;
     DECLARE v_price DECIMAL(10,2);
     DECLARE v_totalCostDifference DECIMAL(10,2);
@@ -118,7 +118,7 @@ CREATE DEFINER=`` PROCEDURE `UpdateCartItemQuantity` (IN `p_userId` INT, IN `p_c
     CALL UpdateTotalCost(p_cartId, p_userId,  v_totalCostDifference);
 END$$
 
-CREATE DEFINER=`` PROCEDURE `UpdateTotalCost` (IN `p_cartId` INT, IN `p_userId` INT, IN `p_totalCost` DECIMAL(10,2))   BEGIN
+CREATE DEFINER=``@`%` PROCEDURE `UpdateTotalCost` (IN `p_cartId` INT, IN `p_userId` INT, IN `p_totalCost` DECIMAL(10,2))   BEGIN
     -- Update the TotalCost in the Cart table
     UPDATE carts
     SET totalCost = TotalCost + p_totalCost
@@ -137,10 +137,10 @@ DELIMITER ;
 --
 
 CREATE TABLE `carts` (
-  `id` int(11) NOT NULL,
-  `userId` int(11) NOT NULL,
-  `createdDate` timestamp NOT NULL DEFAULT current_timestamp(),
-  `totalCost` decimal(10,2) NOT NULL DEFAULT 0.00
+  `id` int NOT NULL,
+  `userId` int NOT NULL,
+  `createdDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `totalCost` decimal(10,2) NOT NULL DEFAULT '0.00'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -157,12 +157,12 @@ INSERT INTO `carts` (`id`, `userId`, `createdDate`, `totalCost`) VALUES
 --
 
 CREATE TABLE `cart_items` (
-  `id` int(11) NOT NULL,
-  `cartId` int(11) NOT NULL,
-  `productId` bigint(20) NOT NULL,
-  `quantity` int(11) NOT NULL,
+  `id` int NOT NULL,
+  `cartId` int NOT NULL,
+  `productId` bigint NOT NULL,
+  `quantity` int NOT NULL,
   `price` decimal(10,2) DEFAULT NULL,
-  `createdDate` timestamp NOT NULL DEFAULT current_timestamp()
+  `createdDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -181,10 +181,10 @@ INSERT INTO `cart_items` (`id`, `cartId`, `productId`, `quantity`, `price`, `cre
 --
 
 CREATE TABLE `categories` (
-  `id` int(10) NOT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `imageUrl` varchar(255) DEFAULT NULL
+  `id` int NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `description` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `imageUrl` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -209,20 +209,21 @@ INSERT INTO `categories` (`id`, `name`, `description`, `imageUrl`) VALUES
 --
 
 CREATE TABLE `orders` (
-  `id` int(11) NOT NULL,
+  `id` int NOT NULL,
   `createdDate` datetime NOT NULL,
+  `deliveryStatus` enum('pending','processing','shipped','delivered','cancelled') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `totalPrice` double NOT NULL,
-  `sessionId` varchar(255) NOT NULL,
-  `userId` int(11) DEFAULT NULL
+  `sessionId` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `userId` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `orders`
 --
 
-INSERT INTO `orders` (`id`, `createdDate`, `totalPrice`, `sessionId`, `userId`) VALUES
-(1, '2023-11-09 23:31:01', 1169.88, 'cs_test_b1pV0tUEXxzTKWksCZP1SIdmHJfyNN2kCI1PXEOyU1FgzwSjpuaoxuZwOR', 32),
-(2, '2023-11-10 14:44:22', 269.91, 'cs_test_b1t2hfj2Azp74y3n4vspQsVjWkXi7uzmZudZWsWf155tqDF7gEqOz4BU37', 32);
+INSERT INTO `orders` (`id`, `createdDate`, `deliveryStatus`, `totalPrice`, `sessionId`, `userId`) VALUES
+(1, '2023-11-09 23:31:01', 'pending', 1169.88, 'cs_test_b1pV0tUEXxzTKWksCZP1SIdmHJfyNN2kCI1PXEOyU1FgzwSjpuaoxuZwOR', 32),
+(2, '2023-11-10 14:44:22', 'pending', 269.91, 'cs_test_b1t2hfj2Azp74y3n4vspQsVjWkXi7uzmZudZWsWf155tqDF7gEqOz4BU37', 32);
 
 -- --------------------------------------------------------
 
@@ -231,12 +232,12 @@ INSERT INTO `orders` (`id`, `createdDate`, `totalPrice`, `sessionId`, `userId`) 
 --
 
 CREATE TABLE `order_items` (
-  `id` int(11) NOT NULL,
-  `quantity` int(11) NOT NULL,
+  `id` int NOT NULL,
+  `quantity` int NOT NULL,
   `price` double NOT NULL,
-  `createdDate` datetime NOT NULL DEFAULT current_timestamp(),
-  `orderId` int(11) DEFAULT NULL,
-  `productId` bigint(20) DEFAULT NULL
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `orderId` int DEFAULT NULL,
+  `productId` bigint DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -259,12 +260,12 @@ INSERT INTO `order_items` (`id`, `quantity`, `price`, `createdDate`, `orderId`, 
 --
 
 CREATE TABLE `products` (
-  `id` bigint(20) NOT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `imageUrl` varchar(255) DEFAULT NULL,
-  `name` varchar(255) DEFAULT NULL,
+  `id` bigint NOT NULL,
+  `description` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `imageUrl` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `price` double NOT NULL,
-  `categoryId` int(10) NOT NULL
+  `categoryId` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -294,11 +295,11 @@ INSERT INTO `products` (`id`, `description`, `imageUrl`, `name`, `price`, `categ
 --
 
 CREATE TABLE `tokens` (
-  `id` int(11) NOT NULL,
-  `token` varchar(512) DEFAULT NULL,
+  `id` int NOT NULL,
+  `token` varchar(512) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `createdDate` datetime DEFAULT NULL,
-  `userId` int(11) NOT NULL,
-  `expiredTime` timestamp NOT NULL DEFAULT current_timestamp()
+  `userId` int NOT NULL,
+  `expiredTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -317,7 +318,8 @@ INSERT INTO `tokens` (`id`, `token`, `createdDate`, `userId`, `expiredTime`) VAL
 (48, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzQsImZpcnN0TmFtZSI6Ik5ndXllbiIsImxhc3ROYW1lIjoiUGhhdCIsImVtYWlsIjoicGhhdGIyMDA1ODUzQHN0dWRlbnQuY3R1LmVkdS52biIsInJvbGUiOjAsImNyZWF0ZWREYXRlIjoiMjAyMy0xMS0xMlQxMDoxMzozOC4yNTlaIiwiaWF0IjoxNjk5Nzg0MDE4LCJleHAiOjMzOTk2MDQwMzYsImlzcyI6ImNvb2xJc3N1ZXIifQ.Ru6Go8l_51b9AugGOBCr-oOIHn4g-g7eRa2jcKwPbb8', '2023-11-12 17:13:38', 34, '2023-11-12 20:13:38'),
 (49, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzIsImZpcnN0TmFtZSI6IlBoYXQiLCJsYXN0TmFtZSI6Ik5ndXllbiIsImVtYWlsIjoidGVzdDIxMjJAZ21haWwuY29tIiwicm9sZSI6MCwiY3JlYXRlZERhdGUiOiIyMDIzLTExLTA0VDA5OjAzOjM1LjAwMFoiLCJpYXQiOjE2OTk3OTAyNjUsImV4cCI6MzM5OTYxNjUzMCwiaXNzIjoiY29vbElzc3VlciJ9._sXyMkzYuqNPx037OnnHfk_8DomIUAhv9r1e9_b2iCI', '2023-11-04 16:03:35', 32, '2023-11-12 21:57:45'),
 (50, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzIsImZpcnN0TmFtZSI6IlBoYXQiLCJsYXN0TmFtZSI6Ik5ndXllbiIsImVtYWlsIjoidGVzdDIxMjJAZ21haWwuY29tIiwicm9sZSI6MCwiY3JlYXRlZERhdGUiOiIyMDIzLTExLTA0VDA5OjAzOjM1LjAwMFoiLCJpYXQiOjE2OTk4Njc4MjUsImV4cCI6MzM5OTc3MTY1MCwiaXNzIjoiY29vbElzc3VlciJ9.3ucuFqzIPuroaa1rCmAqsMlrfjvHwAc2Xi3l5nKHEH8', '2023-11-04 16:03:35', 32, '2023-11-13 19:30:25'),
-(51, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzIsImZpcnN0TmFtZSI6IlBoYXQiLCJsYXN0TmFtZSI6Ik5ndXllbiIsImVtYWlsIjoidGVzdDIxMjJAZ21haWwuY29tIiwicm9sZSI6MCwiY3JlYXRlZERhdGUiOiIyMDIzLTExLTA0VDA5OjAzOjM1LjAwMFoiLCJpYXQiOjE2OTk5NjQyNzUsImV4cCI6MzM5OTk2NDU1MCwiaXNzIjoiY29vbElzc3VlciJ9.LK-t6hzKMp4fpkiG-2Up2MFiyMHxaMOX0UfN7qnPx-0', '2023-11-04 16:03:35', 32, '2023-11-14 22:17:55');
+(51, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzIsImZpcnN0TmFtZSI6IlBoYXQiLCJsYXN0TmFtZSI6Ik5ndXllbiIsImVtYWlsIjoidGVzdDIxMjJAZ21haWwuY29tIiwicm9sZSI6MCwiY3JlYXRlZERhdGUiOiIyMDIzLTExLTA0VDA5OjAzOjM1LjAwMFoiLCJpYXQiOjE2OTk5NjQyNzUsImV4cCI6MzM5OTk2NDU1MCwiaXNzIjoiY29vbElzc3VlciJ9.LK-t6hzKMp4fpkiG-2Up2MFiyMHxaMOX0UfN7qnPx-0', '2023-11-04 16:03:35', 32, '2023-11-14 22:17:55'),
+(52, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzIsImZpcnN0TmFtZSI6IlBoYXQiLCJsYXN0TmFtZSI6Ik5ndXllbiIsImVtYWlsIjoidGVzdDIxMjJAZ21haWwuY29tIiwicm9sZSI6MCwiY3JlYXRlZERhdGUiOiIyMDIzLTExLTA0VDAyOjAzOjM1LjAwMFoiLCJpYXQiOjE3MDAyODMyNjQsImV4cCI6MzQwMDYwMjUyOCwiaXNzIjoiY29vbElzc3VlciJ9._EVZOXxia9DIu9q9fTfjxqn5tAUYWEC56xpd-85x8uw', '2023-11-04 09:03:35', 32, '2023-11-18 21:54:24');
 
 -- --------------------------------------------------------
 
@@ -326,13 +328,13 @@ INSERT INTO `tokens` (`id`, `token`, `createdDate`, `userId`, `expiredTime`) VAL
 --
 
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `firstName` varchar(255) DEFAULT NULL,
-  `lastName` varchar(255) DEFAULT NULL,
-  `password` varchar(255) DEFAULT NULL,
-  `role` varchar(255) DEFAULT NULL,
-  `createdDate` timestamp NOT NULL DEFAULT current_timestamp()
+  `id` int NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `firstName` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `lastName` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `password` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `role` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `createdDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -351,10 +353,10 @@ INSERT INTO `users` (`id`, `email`, `firstName`, `lastName`, `password`, `role`,
 --
 
 CREATE TABLE `wishlist` (
-  `id` int(11) NOT NULL,
-  `userId` int(11) NOT NULL,
-  `createdDate` timestamp NOT NULL DEFAULT current_timestamp(),
-  `productId` bigint(20) NOT NULL
+  `id` int NOT NULL,
+  `userId` int NOT NULL,
+  `createdDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `productId` bigint NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -444,55 +446,55 @@ ALTER TABLE `wishlist`
 -- AUTO_INCREMENT for table `carts`
 --
 ALTER TABLE `carts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `cart_items`
 --
 ALTER TABLE `cart_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `tokens`
 --
 ALTER TABLE `tokens`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT for table `wishlist`
 --
 ALTER TABLE `wishlist`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- Constraints for dumped tables
