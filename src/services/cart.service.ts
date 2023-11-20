@@ -18,6 +18,23 @@ class CartSevice {
     }
     // Assign current cart id to dto
     addToCartItemDTO.cartId = existingCart!.id;
+
+    // Check the product item exist
+    const existItem = await this.cartRepository.getCartItemById(
+      addToCartItemDTO.cartId!,
+      addToCartItemDTO.productId
+    );
+    // update the cart item
+    if (existItem !== null) {
+      const updateCartItem = await this.cartRepository.updateToCart({
+        id: existItem.id!,
+        productId: existItem.productId,
+        quantity: existItem.quantity + addToCartItemDTO.quantity,
+        userId: addToCartItemDTO.userId,
+        cartId: addToCartItemDTO.cartId,
+      });
+      return updateCartItem;
+    }
     const data = await this.cartRepository.addToCart(addToCartItemDTO);
 
     return data;

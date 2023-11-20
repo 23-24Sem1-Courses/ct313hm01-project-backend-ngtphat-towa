@@ -73,6 +73,7 @@ const removeCartItem = async (
   next: NextFunction
 ) => {
   try {
+    // TODO: replace route cart/delete/:id
     const removeCartItemDTO = parseBodyToDTO<RemoveItemCartDTO>(
       req,
       removeCartItemSchema

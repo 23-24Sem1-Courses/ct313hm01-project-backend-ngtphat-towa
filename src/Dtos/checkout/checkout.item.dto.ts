@@ -30,10 +30,10 @@ export const checkoutItemSchema = Joi.object({
     "number.min": "Product ID must be at least 1",
     "any.required": "Product ID is a required field",
   }),
-  userId: Joi.number().integer().min(1).required().messages({
+  userId: Joi.number().integer().min(1).optional().messages({
     "number.base": "User ID must be a number",
     "number.integer": "User ID must be an integer",
     "number.min": "User ID must be at least 1",
-    "any.required": "User ID is a required field",
+    // "any.required": "User ID is a required field",
   }),
 }).options({ stripUnknown: true });

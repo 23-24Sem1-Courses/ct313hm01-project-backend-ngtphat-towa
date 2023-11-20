@@ -17,6 +17,7 @@ import {
 const router = express();
 const db = Knex(config.knex);
 const PORT = config.server.port;
+// const PORT = 3307;
 
 /** Middlewares **/
 /* Express  */
@@ -43,8 +44,9 @@ const StartServer = () => {
     Logging.info(
       `Incomming - METHOD: [${req.method}] - URL: [${req.url}] - IP: [${req.socket.remoteAddress}]`
     );
-
-    Logging.info(`Result - BODY:${req.body}`);
+    // Log the request body and parameters
+    Logging.debug("Request Body:", req.body);
+    Logging.debug("Request Parameters:", req.params);
     res.on("finish", () => {
       /** Log the res */
       Logging.info(

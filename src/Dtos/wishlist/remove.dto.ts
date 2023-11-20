@@ -6,7 +6,7 @@ export interface RemoveWilistItemDTO {
 }
 
 export const removeWilistItemSchema = Joi.object({
-  id: Joi.number().required().messages({
+  id: Joi.number().optional().messages({
     "number.base": "Id must be a number",
     "any.required": "Id is a required field",
   }),

@@ -45,4 +45,4 @@ export const createProductSchema = Joi.object({
     "any.required":
       "The category ID is a required field. Don't forget to include it.",
   }),
-});
+}).options({ stripUnknown: true });

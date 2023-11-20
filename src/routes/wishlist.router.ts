@@ -13,7 +13,7 @@ WishlistRouter.route("/add").post(
   controller.addWishList
 );
 
-WishlistRouter.route("/remove").post(
+WishlistRouter.route("/remove").delete(
   userController.validateToken,
   controller.removeWishlist
 );

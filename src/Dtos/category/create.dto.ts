@@ -21,4 +21,4 @@ export const createCategorySchema = Joi.object({
     "string.base": "imageUrl must be a string",
     "string.uri": "imageUrl must be a valid URI",
   }),
-});
+}).options({ stripUnknown: true });

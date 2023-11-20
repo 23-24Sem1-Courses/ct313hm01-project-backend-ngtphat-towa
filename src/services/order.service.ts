@@ -15,6 +15,9 @@ import CartService from "../services/cart.service";
 import { UserDTO } from "../Dtos/user/user.dto";
 import Decimal from "decimal.js";
 import { SessionDTO } from "../Dtos/checkout/session.dto";
+import { DeliveryStatus } from "../enums/order.status.enum";
+import { UpdateCartItemDTO } from "../Dtos/cart/update.item.dto";
+import { UpdateOrderStatusDTO } from "../Dtos/order/update.status.dto";
 
 // supply success and failure url for stripe
 const successURL = config.client.baseUrl + "payment/success";
@@ -30,25 +33,67 @@ class OrderService {
 
   constructor() {}
 
-  async getOrder(id: number) {
-    const order = await this.orderRepository.getById(id);
-    if (order === null) {
+  async getOrderByUser(id: number, userId: number) {
+    const orderDTO = await this.orderRepository.getUserOrderById(id, userId);
+    const order = await this.getOrderItemsFromOrderDTO(orderDTO);
+    return order;
+  }
+
+  async updateOrderStatus(dto: UpdateOrderStatusDTO) {
+    // check dto exist
+    const orderDTO = await this.orderRepository.getOrderById(dto.id!);
+    if (orderDTO === null) {
       throw new ResourceNotFoundErrorResponse();
     }
-    const orderItems = await this.orderItemRepository.getById(id);
-    order.orderItems = orderItems ?? [];
+    const order = await this.orderRepository.updateOrderStatus(dto);
+    return order;
+  }
+
+  async getOrder(id: number) {
+    const orderDTO = await this.orderRepository.getOrderById(id);
+    const order = await this.getOrderItemsFromOrderDTO(orderDTO);
+    return order;
+  }
+  private async getOrderItemsFromOrderDTO(orderDTO: OrderDTO | null) {
+    if (orderDTO === null) {
+      throw new ResourceNotFoundErrorResponse();
+    }
+
+    const orderItems = await this.orderItemRepository.getOrderById(
+      orderDTO.id!
+    );
+    const order: Order = {
+      ...orderDTO,
+      orderItems: orderItems!,
+    };
 
     return order;
   }
-  async listOrders(userDTO: UserDTO) {
-    const orders = await this.orderRepository.getAll(userDTO.id);
-    if (orders === null) {
+  async getAllOrdersByUser(userDTO: UserDTO) {
+    const orderDTOs = await this.orderRepository.getAllByUser(userDTO.id);
+    if (orderDTOs === null) {
       throw new ResourceNotFoundErrorResponse();
     }
-    for (const order of orders) {
-      const orderItems = await this.orderItemRepository.getById(order.id!);
+    const orders: Order[] = [];
+    for (const orderDTO of orderDTOs) {
+      const order = await this.getOrderItemsFromOrderDTO(orderDTO);
 
-      order.orderItems = orderItems!;
+      orders.push(order);
+    }
+
+    return orders;
+  }
+
+  async getAllOrders() {
+    const orderDTOs = await this.orderRepository.getAll();
+    if (orderDTOs === null) {
+      throw new ResourceNotFoundErrorResponse();
+    }
+    const orders: Order[] = [];
+    for (const orderDTO of orderDTOs) {
+      const order = await this.getOrderItemsFromOrderDTO(orderDTO);
+
+      orders.push(order);
     }
 
     return orders;
@@ -96,6 +141,7 @@ class OrderService {
     // create DTO
     const newOrder: OrderDTO = {
       createdDate: new Date(),
+      deliveryStatus: DeliveryStatus.PENDING,
       sessionId: sessionDTO.sessionId,
       userId: user.id,
       totalPrice: cartDTO.totalCost,

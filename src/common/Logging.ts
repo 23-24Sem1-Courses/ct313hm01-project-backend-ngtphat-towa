@@ -7,6 +7,16 @@ export default class Logging {
       chalk.blue(`[${new Date().toLocaleString()}] [INFO]`),
       typeof args === "string" ? chalk.blueBright(args) : args
     );
+  public static debug = (msg: any, args: any) => {
+    if (Object.keys(args).length !== 0) {
+      console.log(
+        chalk.cyan(`[${new Date().toLocaleString()}] [DEBUG]`),
+        typeof msg === "string" ? chalk.cyanBright(msg) : msg
+      );
+      console.info(args);
+    }
+  };
+
   public static warning = (args: any) =>
     console.log(
       chalk.yellow(`[${new Date().toLocaleString()}] [WARN]`),

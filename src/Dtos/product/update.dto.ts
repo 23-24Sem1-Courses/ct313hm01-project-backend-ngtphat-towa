@@ -39,4 +39,4 @@ export const updateProductSchema = Joi.object({
     "number.base":
       "The category ID should be a numerical value. Please check the input.",
   }),
-});
+}).options({ stripUnknown: true });

@@ -113,7 +113,6 @@ export class AuthenticationService {
     user: User
   ): Promise<AuthenticationTokenDTO | null> {
     try {
-      Logging.info(user);
       // Create jwt config
       var timeSinceEpoch = new Date().getTime();
       var expirationTime =
@@ -137,7 +136,6 @@ export class AuthenticationService {
           expiresIn: expirationTimeInSeconds,
         }
       );
-      Logging.info(token);
 
       // save token in database
       const dto: AuthenticationTokenDTO = {
@@ -146,14 +144,12 @@ export class AuthenticationService {
         expiredTime: new Date(expirationTime),
         userId: user.id,
       };
-      Logging.info(dto);
 
       const data = await this.tokenRepo.saveToken(dto);
       // success in creating
       dto.id = data.id;
       return dto;
     } catch (error) {
-      Logging.error(error);
       throw new Error("Failed to generate the token. Please try again.");
     }
   }
@@ -168,8 +164,6 @@ export class AuthenticationService {
         token,
         config.server.token.secret
       ) as JwtPayload;
-
-      Logging.info(payload);
 
       const user = await this.userRepo.getById(payload.id);
       if (user === null) {

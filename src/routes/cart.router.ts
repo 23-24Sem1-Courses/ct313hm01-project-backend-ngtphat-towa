@@ -4,22 +4,25 @@ import userController from "../controllers/user.controller";
 const CartRouter = express.Router();
 
 /** get all cart */
-CartRouter.route("/").get(
+CartRouter.route("/all").get(
   userController.validateToken,
   controller.getCartItems
 );
 
 /** /add */
-CartRouter.route("/").post(userController.validateToken, controller.addToCart);
+CartRouter.route("/add").post(
+  userController.validateToken,
+  controller.addToCart
+);
 
 /** /update/{cartItemId} */
-CartRouter.route("/:id").put(
+CartRouter.route("/update-quantity").put(
   userController.validateToken,
   controller.updateCartItem
 );
 
 /** /delete/{cartItemId} */
-CartRouter.route("/").delete(
+CartRouter.route("/remove").delete(
   userController.validateToken,
   controller.removeCartItem
 );
