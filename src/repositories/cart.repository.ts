@@ -147,7 +147,7 @@ class CartRepository {
         "ci.productId",
         "ci.price",
         "p.description",
-        "p.imageURL",
+        "p.imageUrl",
         "p.name",
         "ci.createdDate"
       )
